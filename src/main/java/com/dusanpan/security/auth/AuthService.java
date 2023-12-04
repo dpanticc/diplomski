@@ -1,5 +1,7 @@
 package com.dusanpan.security.auth;
 
+import com.dusanpan.security.entity.Role;
+import com.dusanpan.security.repository.RoleRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dusanpan.security.config.JwtService;
 import com.dusanpan.security.entity.User;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -32,7 +35,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final Map<String, String> loggedInUsers = new ConcurrentHashMap<>();
     private final TokenRepository tokenRepository;
-
+    private static final String DEFAULT_ROLE = "USER";
+    private final RoleRepository roleRepository;
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
@@ -40,7 +44,9 @@ public class AuthService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
-
+        Role defaultRole = roleRepository.findByName(DEFAULT_ROLE)
+                .orElseThrow(() -> new RuntimeException("Default role not found. Check your database setup."));
+        user.setRoles(Set.of(defaultRole));
         var savedUser = repository.save(user);
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);

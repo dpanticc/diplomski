@@ -1,5 +1,7 @@
 package com.dusanpan.security.config;
 
+import com.dusanpan.security.entity.User;
+import com.dusanpan.security.entity.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -7,7 +9,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
+import java.util.stream.Collectors;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +33,9 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails){
+        User user = (User) userDetails;
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
         return generateToken(new HashMap<>(), userDetails);
     }
 

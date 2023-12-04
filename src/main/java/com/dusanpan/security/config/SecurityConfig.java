@@ -1,5 +1,6 @@
 package com.dusanpan.security.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -9,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -28,11 +31,28 @@ public class SecurityConfig {
 
         http
                 .csrf().disable()
+                .authorizeRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).hasRole("ADMIN")
+                                .anyRequest().authenticated()
+                )
+                .sessionManagement(sessionManagement ->
+                        sessionManagement
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+
+        /*http
+                .csrf().disable()
                 .authorizeRequests()
-                .requestMatchers("/api/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/api/public/**").permitAll() // Specify public endpoints
+                .antMatchers("/api/admin/**").hasRole("ADMIN") // Restrict to ADMIN role
+                .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -40,6 +60,6 @@ public class SecurityConfig {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
+        return http.build();   */
     }
 }
