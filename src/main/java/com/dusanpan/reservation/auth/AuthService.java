@@ -52,7 +52,7 @@ public class AuthService {
     private final UserService userService;
     private final EmailValidator emailValidator;
 
-    public String register(RegisterRequest request) {
+    public String register(RegisterRequest request) throws EmailNotValidException {
 
         boolean isValidEmail = emailValidator.
                 test(request.getEmail());
@@ -79,9 +79,6 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("Default role not found. Check your database setup."));
 
         user.setRoles(Set.of(defaultRole));
-
-        repository.save(user);
-
         String token = UUID.randomUUID().toString();
         ConfirmationToken confirmationToken = new ConfirmationToken(token,
                 LocalDateTime.now(),
@@ -89,6 +86,7 @@ public class AuthService {
                 user);
 
         String link = "http://localhost:8080/api/auth/register/confirm?token=" + token;
+        repository.save(user);
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
@@ -110,7 +108,6 @@ public class AuthService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);
