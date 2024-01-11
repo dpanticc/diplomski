@@ -9,6 +9,8 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.stream.Collectors;
 import java.security.Key;
 import java.util.Date;
@@ -32,11 +34,16 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
+    public List<String> extractRoles(String token) {
+        return extractClaim(token, claims -> claims.get("roles", List.class));
+    }
+
+
     public String generateToken(UserDetails userDetails){
         User user = (User) userDetails;
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.toList()));
-        return generateToken(new HashMap<>(), userDetails);
+        return generateToken(claims, userDetails);
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {

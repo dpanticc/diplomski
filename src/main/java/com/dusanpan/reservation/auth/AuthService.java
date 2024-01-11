@@ -90,7 +90,12 @@ public class AuthService {
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
-        return token;
+        System.out.println(token);
+
+        String responseToken = '"'+token+'"';
+
+        System.out.println(responseToken);
+        return responseToken;
     }
 
     public AuthenticationResponse authenticate(AuthRequest request) throws Exception {
