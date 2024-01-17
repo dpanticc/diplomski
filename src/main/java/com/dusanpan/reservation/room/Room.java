@@ -1,5 +1,6 @@
-package com.dusanpan.reservation.models;
+package com.dusanpan.reservation.room;
 
+import com.dusanpan.reservation.models.Reservation;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;

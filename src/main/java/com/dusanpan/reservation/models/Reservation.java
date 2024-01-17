@@ -1,5 +1,6 @@
 package com.dusanpan.reservation.models;
 
+import com.dusanpan.reservation.room.Room;
 import com.dusanpan.reservation.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

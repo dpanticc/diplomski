@@ -7,6 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/auth")
@@ -39,14 +42,16 @@ public class AuthController {
 
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody LogoutRequest request) {
+    public ResponseEntity<Map<String, String>> logout(@RequestBody LogoutRequest request) {
         String username = request.getUsername();
 
         if (authService.isUserLoggedIn(username)) {
             authService.logout(username);
-            return ResponseEntity.ok("Logged out successfully.");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Logged out successfully.");
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User is not logged in.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", "User is not logged in."));
         }
     }
     @PostMapping("/refresh-token")
