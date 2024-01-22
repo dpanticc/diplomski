@@ -23,7 +23,9 @@ public class CorsConfig {
                         .allowedOrigins(allowDomains) // Replace with the origin of your Angular app
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("*") // Allow all headers, including "Authorization"
-                        .allowCredentials(true);
+                        .allowCredentials(true)
+                        .exposedHeaders("Authorization"); // expose headers if needed
+                ;
             }
         };
     }

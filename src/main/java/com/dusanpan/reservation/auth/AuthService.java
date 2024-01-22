@@ -45,7 +45,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final Map<String, String> loggedInUsers = new ConcurrentHashMap<>();
     private final TokenRepository tokenRepository;
-    private static final String DEFAULT_ROLE = "USER";
+    private static final String DEFAULT_ROLE = "ADMIN";
     private final RoleRepository roleRepository;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
@@ -90,11 +90,9 @@ public class AuthService {
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
-        System.out.println(token);
 
         String responseToken = '"'+token+'"';
 
-        System.out.println(responseToken);
         return responseToken;
     }
 

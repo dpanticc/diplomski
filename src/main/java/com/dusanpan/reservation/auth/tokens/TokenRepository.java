@@ -1,5 +1,6 @@
 package com.dusanpan.reservation.auth.tokens;
 
+import com.dusanpan.reservation.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,5 +16,7 @@ public interface TokenRepository extends JpaRepository<Token, Integer> {
       """)
     List<Token> findAllValidTokenByUser(Long id);
 
-    Optional<Token> findByToken(String token);
+
+
+    List<Token> findAllByUser(User user);
 }

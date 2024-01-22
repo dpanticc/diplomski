@@ -1,9 +1,7 @@
-/*package com.dusanpan.reservation.user;
-
-import com.dusanpan.reservation.room.Room;
-import com.dusanpan.reservation.room.RoomService;
+package com.dusanpan.reservation.user;
+import com.dusanpan.reservation.auth.tokens.Token;
+import com.dusanpan.reservation.auth.tokens.TokenRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,42 +11,31 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final UserService userService;
-    private final RoomService roomService;
+    private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers(){
-        return null;
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
+
     }
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<?> getUserById(@PathVariable Long userId){
-        return null;
+    @DeleteMapping("/users/{username}")
+    public void deleteUser(@PathVariable String username) {
+        User user = userRepository.findByUsername(username);
+
+        // Delete associated roles
+        user.getRoles().clear();
+        userRepository.save(user);
+
+        // Fetch associated tokens
+        List<Token> tokens = tokenRepository.findAllByUser(user);
+
+        // Delete all associated tokens
+        tokenRepository.deleteAll(tokens);
+
+        // Delete user
+        userRepository.deleteById(user.getId());
     }
 
-    @DeleteMapping("/users/{userId}")
-    public ResponseEntity<?> deleteUserById(@PathVariable Long userId){
-        return null;
-    }
-
-    @GetMapping("/rooms")
-    public ResponseEntity<?> getAllRooms(){
-        return null;
-    }
-
-    @GetMapping("/rooms/{roomsId}")
-    public ResponseEntity<?> getRoomById(@PathVariable Long roomsId){
-        return null;
-    }
-
-    @PostMapping("/rooms")
-    public ResponseEntity<?> addRoom(@RequestBody Room room){
-        return null;
-    }
-
-    @PutMapping("/rooms/{roomId}")
-    public ResponseEntity<?> deleteRoom(@PathVariable Long roomId){
-        return null;
-    }
 }
-*/
