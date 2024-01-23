@@ -1,7 +1,7 @@
 package com.dusanpan.reservation.config;
 
-import com.dusanpan.reservation.user.User;
-import com.dusanpan.reservation.user.Role;
+import com.dusanpan.reservation.domain.User;
+import com.dusanpan.reservation.domain.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

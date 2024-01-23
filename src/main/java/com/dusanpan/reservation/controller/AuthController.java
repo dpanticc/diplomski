@@ -1,4 +1,6 @@
-package com.dusanpan.reservation.auth;
+package com.dusanpan.reservation.controller;
+import com.dusanpan.reservation.auth.*;
+import com.dusanpan.reservation.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

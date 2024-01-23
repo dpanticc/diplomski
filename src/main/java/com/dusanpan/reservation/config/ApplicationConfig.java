@@ -1,6 +1,6 @@
 package com.dusanpan.reservation.config;
 
-import com.dusanpan.reservation.user.UserRepository;
+import com.dusanpan.reservation.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

@@ -1,5 +1,7 @@
-package com.dusanpan.reservation.auth.tokens;
+package com.dusanpan.reservation.repository;
 
+import com.dusanpan.reservation.auth.tokens.ConfirmationToken;
+import com.dusanpan.reservation.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +27,5 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationT
                           @Param("confirmedAt")LocalDateTime confirmedAt);
 
 
+    ConfirmationToken findByUser(User user);
 }

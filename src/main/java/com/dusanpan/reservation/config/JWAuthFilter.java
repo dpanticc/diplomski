@@ -1,7 +1,7 @@
 package com.dusanpan.reservation.config;
 
-import com.dusanpan.reservation.user.User;
-import com.dusanpan.reservation.user.UserService;
+import com.dusanpan.reservation.domain.User;
+import com.dusanpan.reservation.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

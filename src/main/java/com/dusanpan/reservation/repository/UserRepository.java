@@ -1,11 +1,14 @@
-package com.dusanpan.reservation.user;
+package com.dusanpan.reservation.repository;
 
+import com.dusanpan.reservation.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 @Transactional(readOnly = true)
@@ -20,4 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 
     User findByUsernameOrEmail(String username, String email);
+    List<User> findAll();
+
 }

@@ -1,6 +1,5 @@
-package com.dusanpan.reservation.user;
+package com.dusanpan.reservation.domain;
 
-import com.dusanpan.reservation.user.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

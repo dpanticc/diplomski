@@ -1,6 +1,6 @@
 package com.dusanpan.reservation.auth.tokens;
 
-import com.dusanpan.reservation.user.User;
+import com.dusanpan.reservation.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

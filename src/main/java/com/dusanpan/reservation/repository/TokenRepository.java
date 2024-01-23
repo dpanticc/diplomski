@@ -1,11 +1,11 @@
-package com.dusanpan.reservation.auth.tokens;
+package com.dusanpan.reservation.repository;
 
-import com.dusanpan.reservation.user.User;
+import com.dusanpan.reservation.auth.tokens.Token;
+import com.dusanpan.reservation.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TokenRepository extends JpaRepository<Token, Integer> {
 

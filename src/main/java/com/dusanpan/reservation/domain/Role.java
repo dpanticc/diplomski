@@ -1,4 +1,4 @@
-package com.dusanpan.reservation.user;
+package com.dusanpan.reservation.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

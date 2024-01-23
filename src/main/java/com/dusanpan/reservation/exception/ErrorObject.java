@@ -1,4 +1,4 @@
-package com.dusanpan.reservation.exceptions;
+package com.dusanpan.reservation.exception;
 
 import lombok.Data;
 

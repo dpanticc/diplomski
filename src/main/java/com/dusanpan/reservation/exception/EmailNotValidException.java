@@ -1,4 +1,4 @@
-package com.dusanpan.reservation.exceptions;
+package com.dusanpan.reservation.exception;
 
 public class EmailNotValidException extends RuntimeException {
     private static final long serialVersioUID = 1;

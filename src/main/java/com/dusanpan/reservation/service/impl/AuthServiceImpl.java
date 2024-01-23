@@ -1,21 +1,25 @@
-package com.dusanpan.reservation.auth;
+package com.dusanpan.reservation.service.impl;
 
+import com.dusanpan.reservation.auth.AuthRequest;
+import com.dusanpan.reservation.auth.AuthenticationResponse;
+import com.dusanpan.reservation.auth.RegisterRequest;
 import com.dusanpan.reservation.auth.tokens.ConfirmationToken;
+import com.dusanpan.reservation.auth.tokens.Token;
+import com.dusanpan.reservation.auth.tokens.TokenType;
+import com.dusanpan.reservation.domain.User;
 import com.dusanpan.reservation.email.EmailSender;
 import com.dusanpan.reservation.email.EmailValidator;
-import com.dusanpan.reservation.exceptions.EmailNotValidException;
-import com.dusanpan.reservation.exceptions.UserAlreadyExistsException;
-import com.dusanpan.reservation.user.Role;
-import com.dusanpan.reservation.auth.tokens.ConfirmationTokenService;
-import com.dusanpan.reservation.user.RoleRepository;
-import com.dusanpan.reservation.user.UserService;
+import com.dusanpan.reservation.exception.EmailNotValidException;
+import com.dusanpan.reservation.exception.UserAlreadyExistsException;
+import com.dusanpan.reservation.domain.Role;
+import com.dusanpan.reservation.repository.RoleRepository;
+import com.dusanpan.reservation.repository.TokenRepository;
+import com.dusanpan.reservation.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.dusanpan.reservation.config.JwtService;
-import com.dusanpan.reservation.user.User;
-import com.dusanpan.reservation.user.UserRepository;
-import com.dusanpan.reservation.auth.tokens.Token;
-import com.dusanpan.reservation.auth.tokens.TokenRepository;
-import com.dusanpan.reservation.auth.tokens.TokenType;
+import com.dusanpan.reservation.service.AuthService;
+import com.dusanpan.reservation.service.ConfirmationTokenService;
+import com.dusanpan.reservation.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -37,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthServiceImpl implements AuthService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
@@ -45,17 +49,16 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final Map<String, String> loggedInUsers = new ConcurrentHashMap<>();
     private final TokenRepository tokenRepository;
-    private static final String DEFAULT_ROLE = "ADMIN";
+    private static final String DEFAULT_ROLE = "USER";
     private final RoleRepository roleRepository;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
     private final UserService userService;
     private final EmailValidator emailValidator;
 
+    @Override
     public String register(RegisterRequest request) throws EmailNotValidException {
-
-        boolean isValidEmail = emailValidator.
-                test(request.getEmail());
+        boolean isValidEmail = emailValidator.test(request.getEmail());
 
         if (!isValidEmail) {
             throw new EmailNotValidException("Email not valid");
@@ -91,11 +94,12 @@ public class AuthService {
         confirmationTokenService.saveConfirmationToken(confirmationToken);
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
 
-        String responseToken = '"'+token+'"';
+        String responseToken = '"' + token + '"';
 
         return responseToken;
     }
 
+    @Override
     public AuthenticationResponse authenticate(AuthRequest request) throws Exception {
         try {
             authenticationManager.authenticate(
@@ -123,6 +127,7 @@ public class AuthService {
         return AuthenticationResponse.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
     }
 
+    @Override
     public void logout(String username) {
         if (isUserLoggedIn(username)) {
             loggedInUsers.remove(username);
@@ -132,22 +137,22 @@ public class AuthService {
         }
     }
 
+    @Override
     public boolean isUserLoggedIn(String username) {
         return loggedInUsers.containsKey(username);
     }
 
+    @Override
     public void addLoggedInUser(String username, String token) {
         loggedInUsers.put(username, token);
     }
 
-    public void refreshToken(
-            HttpServletRequest request,
-            HttpServletResponse response
-    ) throws IOException {
+    @Override
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String username;
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
         refreshToken = authHeader.substring(7);
@@ -168,29 +173,7 @@ public class AuthService {
         }
     }
 
-    private void revokeAllUserTokens(User user) {
-        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
-        if (validUserTokens.isEmpty())
-            return;
-        validUserTokens.forEach(token -> {
-            token.setExpired(true);
-            token.setRevoked(true);
-        });
-        tokenRepository.saveAll(validUserTokens);
-    }
-
-    private void saveUserToken(User user, String jwtToken) {
-        var token = Token.builder()
-                .user(user)
-                .token(jwtToken)
-                .tokenType(TokenType.BEARER)
-                .expired(false)
-                .revoked(false)
-                .build();
-        tokenRepository.save(token);
-    }
-
-
+    @Override
     @Transactional
     public String confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
@@ -213,6 +196,28 @@ public class AuthService {
                 confirmationToken.getUser().getEmail());
 
         return "confirmed";
+    }
+
+    private void revokeAllUserTokens(User user) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
+    }
+
+    private void saveUserToken(User user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
     }
 
     private String buildEmail(String name, String link) {

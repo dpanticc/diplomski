@@ -1,6 +1,6 @@
-package com.dusanpan.reservation.room;
+package com.dusanpan.reservation.domain;
 
-import com.dusanpan.reservation.models.Reservation;
+import com.dusanpan.reservation.domain.Reservation;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
@@ -24,7 +24,13 @@ public class Room {
     private String name;
 
     @Column
+    private String floor;
+
+    @Column
     private int capacity;
+
+    @Column
+    private String details;
 
     @ManyToOne
     @JoinColumn(name = "reservation_id")

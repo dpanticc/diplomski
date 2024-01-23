@@ -25,7 +25,7 @@ public class CorsConfig {
                         .allowedHeaders("*") // Allow all headers, including "Authorization"
                         .allowCredentials(true)
                         .exposedHeaders("Authorization"); // expose headers if needed
-                ;
+
             }
         };
     }
