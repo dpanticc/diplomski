@@ -7,6 +7,7 @@ import com.dusanpan.reservation.repository.UserRepository;
 import com.dusanpan.reservation.service.AdminService;
 import com.dusanpan.reservation.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,5 +39,15 @@ public class AdminController {
     @PostMapping("/rooms")
     public void save(@RequestBody Room room){
         adminService.save(room);
+    }
+
+    @DeleteMapping("/rooms")
+    public void delete(@RequestParam Long room){
+        roomService.delete(room);
+    }
+
+    @PutMapping("/rooms/{id}")
+    public ResponseEntity<Room> updateRoom(@PathVariable Long id, @RequestBody Room updatedRoom){
+        return roomService.update(id, updatedRoom);
     }
 }

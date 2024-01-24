@@ -12,24 +12,25 @@ import java.util.Date;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailNotValidException.class)
-    public ResponseEntity<ErrorObject> handleEmailNotValidException(EmailNotValidException ex, WebRequest request){
-        ErrorObject errorObject = new ErrorObject();
-
-        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        errorObject.setMessage(ex.getMessage());
-        errorObject.setTimestamp(new Date());
-
-        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorObject> handleEmailNotValidException(EmailNotValidException ex, WebRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ErrorObject> handleUserAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request){
+    public ResponseEntity<ErrorObject> handleUserAlreadyExistsException(UserAlreadyExistsException ex, WebRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(RoomNotFoundException.class)
+    public ResponseEntity<ErrorObject> handleRoomNotFoundException(RoomNotFoundException ex, WebRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    private ResponseEntity<ErrorObject> buildErrorResponse(HttpStatus status, String message) {
         ErrorObject errorObject = new ErrorObject();
-
-        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        errorObject.setMessage(ex.getMessage());
+        errorObject.setStatusCode(status.value());
+        errorObject.setMessage(message);
         errorObject.setTimestamp(new Date());
-
-        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errorObject, status);
     }
 }
