@@ -1,8 +1,10 @@
 package com.dusanpan.reservation.service.impl;
 
 import com.dusanpan.reservation.auth.tokens.ConfirmationToken;
+import com.dusanpan.reservation.domain.Room;
 import com.dusanpan.reservation.repository.ConfirmationTokenRepository;
 import com.dusanpan.reservation.auth.tokens.Token;
+import com.dusanpan.reservation.repository.RoomRepository;
 import com.dusanpan.reservation.repository.TokenRepository;
 import com.dusanpan.reservation.domain.User;
 import com.dusanpan.reservation.repository.UserRepository;
@@ -18,6 +20,7 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final ConfirmationTokenRepository confirmationTokenRepository;
+    private final RoomRepository roomRepository;
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -41,5 +44,10 @@ public class AdminServiceImpl implements AdminService {
 
         // Delete user
         userRepository.deleteById(user.getId());
+    }
+
+    @Override
+    public void save(Room room) {
+        roomRepository.save(room);
     }
 }

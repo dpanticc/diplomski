@@ -35,4 +35,8 @@ public class AdminController {
         return roomService.getAllRooms();
     }
 
+    @PostMapping("/rooms")
+    public void save(@RequestBody Room room){
+        adminService.save(room);
+    }
 }
