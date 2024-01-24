@@ -46,8 +46,5 @@ public class AdminServiceImpl implements AdminService {
         userRepository.deleteById(user.getId());
     }
 
-    @Override
-    public void save(Room room) {
-        roomRepository.save(room);
-    }
+
 }

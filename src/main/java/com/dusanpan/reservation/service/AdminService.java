@@ -10,5 +10,4 @@ public interface AdminService {
 
     void deleteUser(String username);
 
-    void save(Room room);
 }

@@ -11,4 +11,6 @@ public interface RoomService {
     void delete(Long roomName);
 
     ResponseEntity<Room> update(Long id, Room updatedRoom);
+
+    void save(Room room);
 }

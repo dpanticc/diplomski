@@ -38,7 +38,7 @@ public class AdminController {
 
     @PostMapping("/rooms")
     public void save(@RequestBody Room room){
-        adminService.save(room);
+        roomService.save(room);
     }
 
     @DeleteMapping("/rooms")

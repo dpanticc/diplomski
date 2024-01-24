@@ -43,4 +43,9 @@ public class RoomServiceImpl implements RoomService {
             return ResponseEntity.status(500).build();
         }
     }
+
+    @Override
+    public void save(Room room) {
+        roomRepository.save(room);
+    }
 }
