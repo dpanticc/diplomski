@@ -1,6 +1,7 @@
 package com.dusanpan.reservation.service;
 
 import com.dusanpan.reservation.domain.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface UserService {
@@ -8,4 +9,8 @@ public interface UserService {
     User loadUserByUsername(String username) throws UsernameNotFoundException;
     User getUserById(Long userId);
     int enableUser(String email);
+
+    User getUserByUsername(String username);
+
+    ResponseEntity<User> updatedUser(User requestedUser);
 }

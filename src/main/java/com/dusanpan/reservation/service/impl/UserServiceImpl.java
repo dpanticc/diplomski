@@ -4,6 +4,7 @@ import com.dusanpan.reservation.domain.User;
 import com.dusanpan.reservation.repository.UserRepository;
 import com.dusanpan.reservation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,5 +44,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public int enableUser(String email) {
         return userRepository.enableUser(email);
+    }
+
+    @Override
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public ResponseEntity<User> updatedUser(User requestedUser) {
+        return userRepository.
     }
 }

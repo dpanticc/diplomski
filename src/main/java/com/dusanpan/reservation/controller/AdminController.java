@@ -41,8 +41,8 @@ public class AdminController {
         roomService.save(room);
     }
 
-    @DeleteMapping("/rooms")
-    public void delete(@RequestParam Long room){
+    @DeleteMapping("/rooms/{room}")
+    public void delete(@PathVariable Long room){
         roomService.delete(room);
     }
 

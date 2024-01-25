@@ -15,7 +15,6 @@ public class CorsConfig {
         allowDomains[1] = "http://localhost:8080";
 
         System.out.println("CORS configuration....");
-
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
@@ -23,9 +22,7 @@ public class CorsConfig {
                         .allowedOrigins(allowDomains) // Replace with the origin of your Angular app
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
                         .allowedHeaders("*") // Allow all headers, including "Authorization"
-                        .allowCredentials(true)
-                        .exposedHeaders("Authorization"); // expose headers if needed
-
+                        .allowCredentials(true);
             }
         };
     }
