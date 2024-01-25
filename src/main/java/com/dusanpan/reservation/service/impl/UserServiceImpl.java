@@ -53,6 +53,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<User> updatedUser(User requestedUser) {
-        return userRepository.
+        return null;
     }
 }
