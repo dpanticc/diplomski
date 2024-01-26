@@ -35,7 +35,7 @@ public class SecurityConfig {
                                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
                                 .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).permitAll()
-                                .requestMatchers(new AntPathRequestMatcher("/api/user/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/api/**")).permitAll()
 
                                 .anyRequest().authenticated()
                 )

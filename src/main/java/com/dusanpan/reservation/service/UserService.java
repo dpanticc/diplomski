@@ -1,7 +1,7 @@
 package com.dusanpan.reservation.service;
 
 import com.dusanpan.reservation.domain.User;
-import org.springframework.http.ResponseEntity;
+import com.dusanpan.reservation.dto.UserDTO;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public interface UserService {
@@ -12,5 +12,5 @@ public interface UserService {
 
     User getUserByUsername(String username);
 
-    ResponseEntity<User> updatedUser(User requestedUser);
+    UserDTO updatedUser(User requestedUser);
 }

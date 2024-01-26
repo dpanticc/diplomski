@@ -1,10 +1,10 @@
 package com.dusanpan.reservation.service.impl;
 
 import com.dusanpan.reservation.domain.User;
+import com.dusanpan.reservation.dto.UserDTO;
 import com.dusanpan.reservation.repository.UserRepository;
 import com.dusanpan.reservation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<User> updatedUser(User requestedUser) {
-        return null;
+    public UserDTO updatedUser(User requestedUser) {
+        User existingUser = userRepository.getById(requestedUser.getId());
+        existingUser.setUsername(requestedUser.getUsername());
+        existingUser.setFirstName(requestedUser.getFirstName());
+        existingUser.setLastName(requestedUser.getLastName());
+        User updatedUser = userRepository.save(existingUser);
+        return UserDTO.fromEntity(updatedUser);
     }
 }

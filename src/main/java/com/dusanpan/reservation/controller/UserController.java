@@ -1,16 +1,13 @@
 package com.dusanpan.reservation.controller;
 
 import com.dusanpan.reservation.domain.User;
+import com.dusanpan.reservation.dto.UserDTO;
 import com.dusanpan.reservation.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/user")
@@ -31,7 +28,16 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<User> updateUser(User requestedUser){
-        return userService.updatedUser(requestedUser);
+    public ResponseEntity<?> updateUser(@RequestBody User requestedUser) {
+        try {
+            UserDTO updatedUser = userService.updatedUser(requestedUser);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            // Log the exception or return a custom error response
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            // Log the exception or return a custom error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
