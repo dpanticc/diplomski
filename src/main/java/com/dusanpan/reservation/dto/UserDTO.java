@@ -15,7 +15,7 @@ public class UserDTO {
 
     // getters and setters
 
-    public static UserDTO fromEntity(User    user) {
+    public static UserDTO fromEntity(User user) {
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
         dto.setUsername(user.getUsername());

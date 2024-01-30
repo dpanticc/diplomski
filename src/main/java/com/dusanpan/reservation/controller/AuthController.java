@@ -1,5 +1,7 @@
 package com.dusanpan.reservation.controller;
 import com.dusanpan.reservation.auth.*;
+import com.dusanpan.reservation.dto.PasswordVerificationDTO;
+import com.dusanpan.reservation.dto.UpdatePasswordDTO;
 import com.dusanpan.reservation.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -62,6 +64,27 @@ public class AuthController {
             HttpServletResponse response
     ) throws IOException {
         authService.refreshToken(request, response);
+    }
+
+    @PostMapping("/verify-password")
+    public ResponseEntity<Boolean> verifyPassword(@RequestBody PasswordVerificationDTO verificationDTO) {
+        try {
+            boolean isPasswordValid = authService.verifyCurrentPassword(verificationDTO);
+            return ResponseEntity.ok(isPasswordValid);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+
+    @PutMapping("update-password")
+    public ResponseEntity<Boolean> updatePassword(@RequestBody UpdatePasswordDTO updatePasswordDTO){
+        try {
+            boolean isUpdated = authService.updatePassword(updatePasswordDTO);
+            System.out.println(ResponseEntity.ok());
+            return ResponseEntity.ok(isUpdated);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }

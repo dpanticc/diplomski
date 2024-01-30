@@ -7,6 +7,8 @@ import com.dusanpan.reservation.auth.tokens.ConfirmationToken;
 import com.dusanpan.reservation.auth.tokens.Token;
 import com.dusanpan.reservation.auth.tokens.TokenType;
 import com.dusanpan.reservation.domain.User;
+import com.dusanpan.reservation.dto.PasswordVerificationDTO;
+import com.dusanpan.reservation.dto.UpdatePasswordDTO;
 import com.dusanpan.reservation.email.EmailSender;
 import com.dusanpan.reservation.email.EmailValidator;
 import com.dusanpan.reservation.exception.EmailNotValidException;
@@ -196,6 +198,50 @@ public class AuthServiceImpl implements AuthService {
                 confirmationToken.getUser().getEmail());
 
         return "confirmed";
+    }
+
+    @Override
+    public boolean verifyCurrentPassword(PasswordVerificationDTO verificationDTO) {
+        if (verificationDTO == null || verificationDTO.getCurrentPasswordEncoded() == null) {
+            // Handle the case where the current password is null
+            throw new IllegalArgumentException("Current password cannot be null");
+        }
+
+        // Retrieve the user from the repository based on the username
+        User user = repository.findByUsername(verificationDTO.getUsername());
+
+        if (user == null) {
+            // Handle the case where the user is not found
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        // Check if the provided current password matches the stored encoded password
+        return passwordEncoder.matches(verificationDTO.getCurrentPasswordEncoded(), user.getPassword());
+    }
+
+    @Override
+    public boolean updatePassword(UpdatePasswordDTO updatePasswordDTO) {
+        try {
+            User user = repository.getByUsername(updatePasswordDTO.getUsername());
+
+            if (user == null) {
+                // Handle the case where the user is not found
+                return false;
+            }
+
+            String newPassword = updatePasswordDTO.getNewPassword();
+            String hashedPassword = passwordEncoder.encode(newPassword);
+
+            user.setPassword(hashedPassword);
+
+            repository.save(user);
+
+            // Return true if the password update was successful
+            return true;
+        } catch (Exception e) {
+            // Handle exceptions (e.g., database errors)
+            return false;
+        }
     }
 
     private void revokeAllUserTokens(User user) {

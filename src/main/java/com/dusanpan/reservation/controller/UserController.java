@@ -26,7 +26,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
     @PutMapping
     public ResponseEntity<?> updateUser(@RequestBody User requestedUser) {
         try {
@@ -40,4 +39,5 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 }
