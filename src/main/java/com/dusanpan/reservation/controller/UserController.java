@@ -1,7 +1,9 @@
 package com.dusanpan.reservation.controller;
 
+import com.dusanpan.reservation.domain.Room;
 import com.dusanpan.reservation.domain.User;
 import com.dusanpan.reservation.dto.UserDTO;
+import com.dusanpan.reservation.service.RoomService;
 import com.dusanpan.reservation.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,12 +11,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final RoomService roomService;
 
     @GetMapping("/{username}")
     public ResponseEntity<User> getUser(@PathVariable String username) {
@@ -39,5 +44,12 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @GetMapping("/rooms")
+    public ResponseEntity<List<Room>> getRoomsByPurpose(@RequestParam String purpose) {
+        List<Room> rooms = roomService.getRoomsByPurpose(purpose);
+        return ResponseEntity.ok(rooms);
+    }
+
 
 }

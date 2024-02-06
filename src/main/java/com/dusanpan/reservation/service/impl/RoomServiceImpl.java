@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -47,5 +49,33 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public void save(Room room) {
         roomRepository.save(room);
+    }
+
+    @Override
+    public List<Room> getRoomsByPurpose(String purpose) {
+        System.out.println(purpose);
+        List<Room> allRooms = roomRepository.findAll();
+        // Filter rooms based on the provided purpose
+        return allRooms.stream()
+                .filter(room -> isValidPurposeForRoom(room.getDetails(), purpose))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isValidPurposeForRoom(String roomDetails, String purpose) {
+        String roomDetailsLowerCase = roomDetails.toLowerCase();
+
+        switch (purpose.toLowerCase()) {
+            case "lecture":
+            case "exam":
+                return Set.of("amphitheater", "lecture hall", "computer center").contains(roomDetailsLowerCase);
+            case "public meeting":
+                return Set.of("amphitheater", "meeting room").contains(roomDetailsLowerCase);
+            case "internal meeting":
+                return roomDetailsLowerCase.equals("meeting room");
+            case "conference":
+                return roomDetailsLowerCase.equals("amphitheater");
+            default:
+                return false;
+        }
     }
 }

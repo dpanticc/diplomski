@@ -13,4 +13,6 @@ public interface RoomService {
     ResponseEntity<Room> update(Long id, Room updatedRoom);
 
     void save(Room room);
+
+    List<Room> getRoomsByPurpose(String purpose);
 }
