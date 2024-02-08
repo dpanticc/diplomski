@@ -1,9 +1,11 @@
 package com.dusanpan.reservation.controller;
 
 import com.dusanpan.reservation.domain.Room;
+import com.dusanpan.reservation.domain.TimeSlot;
 import com.dusanpan.reservation.domain.User;
 import com.dusanpan.reservation.dto.UserDTO;
 import com.dusanpan.reservation.service.RoomService;
+import com.dusanpan.reservation.service.TimeSlotService;
 import com.dusanpan.reservation.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ public class UserController {
 
     private final UserService userService;
     private final RoomService roomService;
+    private final TimeSlotService timeSlotService;
 
     @GetMapping("/{username}")
     public ResponseEntity<User> getUser(@PathVariable String username) {
@@ -51,5 +54,15 @@ public class UserController {
         return ResponseEntity.ok(rooms);
     }
 
+    @GetMapping("/{roomId}/timeslots")
+    public ResponseEntity<List<TimeSlot>> getReservedTimeSlots(@PathVariable Long roomId, @RequestParam String date, @RequestParam String username) {
+        try {
+            List<TimeSlot> reservedTimeSlots = timeSlotService.getReservedTimeSlots(roomId, date);
+            return ResponseEntity.ok(reservedTimeSlots);
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }

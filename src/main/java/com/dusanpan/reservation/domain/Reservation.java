@@ -21,12 +21,16 @@ public class Reservation {
     private Long reservationId;
 
     @Column
+    private String name;
+
+    @Column
     private String purpose;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "reservations", cascade = CascadeType.ALL)
     private Set<Room> rooms;
+
 }

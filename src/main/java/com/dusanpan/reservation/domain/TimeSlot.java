@@ -33,6 +33,6 @@ public class TimeSlot {
     private boolean reserved;
 
     @ManyToOne
-    @JoinColumn(name = "reservationId", nullable = false)
+    @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
 }

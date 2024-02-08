@@ -8,6 +8,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Set;
+
 @Entity
 @Table(name = "rooms")
 @Getter
@@ -32,7 +35,12 @@ public class Room {
     @Column
     private String details;
 
-    @ManyToOne
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
+    @ManyToMany
+    @JoinTable(
+            name = "reservation_room",
+            joinColumns = @JoinColumn(name = "room_id"),
+            inverseJoinColumns = @JoinColumn(name = "reservation_id")
+    )
+    private Set<Reservation> reservations;
+
 }
