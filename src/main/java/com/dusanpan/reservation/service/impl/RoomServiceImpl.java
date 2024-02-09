@@ -53,7 +53,6 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<Room> getRoomsByPurpose(String purpose) {
-        System.out.println(purpose);
         List<Room> allRooms = roomRepository.findAll();
         // Filter rooms based on the provided purpose
         return allRooms.stream()

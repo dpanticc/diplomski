@@ -1,6 +1,7 @@
 package com.dusanpan.reservation.domain;
 
 import com.dusanpan.reservation.domain.Reservation;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 
 import jakarta.persistence.*;
@@ -36,6 +37,7 @@ public class Room {
     private String details;
 
     @ManyToMany
+    @JsonIgnore // Add this annotation to break the bidirectional relationship
     @JoinTable(
             name = "reservation_room",
             joinColumns = @JoinColumn(name = "room_id"),

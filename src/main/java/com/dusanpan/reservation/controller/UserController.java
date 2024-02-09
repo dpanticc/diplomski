@@ -55,13 +55,14 @@ public class UserController {
     }
 
     @GetMapping("/{roomId}/timeslots")
-    public ResponseEntity<List<TimeSlot>> getReservedTimeSlots(@PathVariable Long roomId, @RequestParam String date, @RequestParam String username) {
+    public ResponseEntity<?> getReservedTimeSlots(@PathVariable Long roomId, @RequestParam String date, @RequestParam String username) {
         try {
             List<TimeSlot> reservedTimeSlots = timeSlotService.getReservedTimeSlots(roomId, date);
             return ResponseEntity.ok(reservedTimeSlots);
         } catch (Exception e) {
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            String message = "An error occurred while retrieving reserved time slots.";
+            System.out.println(message + " Error message: " + e.getMessage());
+            return ResponseEntity.ok(message + " Error message: " + e.getMessage());
         }
     }
 
