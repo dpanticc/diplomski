@@ -12,4 +12,6 @@ import java.util.List;
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
 
     List<TimeSlot> findByReservationAndDate(Reservation reservation, LocalDate localDate);
+
+    List<TimeSlot> getTimeSlotsByReservation(Reservation reservation);
 }

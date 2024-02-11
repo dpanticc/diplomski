@@ -36,13 +36,7 @@ public class Room {
     @Column
     private String details;
 
-    @ManyToMany
-    @JsonIgnore // Add this annotation to break the bidirectional relationship
-    @JoinTable(
-            name = "reservation_room",
-            joinColumns = @JoinColumn(name = "room_id"),
-            inverseJoinColumns = @JoinColumn(name = "reservation_id")
-    )
+    @ManyToMany(mappedBy = "rooms")
+    @JsonIgnore // Prevent serialization to avoid infinite recursion
     private Set<Reservation> reservations;
-
 }

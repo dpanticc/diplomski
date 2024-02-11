@@ -23,4 +23,14 @@ public class UserDTO {
         dto.setLastName(user.getLastName());
         return dto;
     }
+
+    public User toEntity() {
+        User user = new User();
+        user.setId(this.id);
+        user.setUsername(this.username);
+        user.setFirstName(this.firstName);
+        user.setLastName(this.lastName);
+        // Set any other properties if needed
+        return user;
+    }
 }

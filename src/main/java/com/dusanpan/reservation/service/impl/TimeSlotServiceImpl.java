@@ -59,4 +59,9 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         }
     }
 
+    @Override
+    public List<TimeSlot> getTimeSlotsByReservation(Reservation reservation) {
+        return timeSlotRepository.getTimeSlotsByReservation(reservation);
+    }
+
 }

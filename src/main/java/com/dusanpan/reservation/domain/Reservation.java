@@ -27,10 +27,14 @@ public class Reservation {
     private String purpose;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false) // Corrected column name
     private User user;
 
-    @ManyToMany(mappedBy = "reservations", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "reservation_room",
+            joinColumns = @JoinColumn(name = "reservation_id"),
+            inverseJoinColumns = @JoinColumn(name = "room_id")
+    )
     private Set<Room> rooms;
-
 }

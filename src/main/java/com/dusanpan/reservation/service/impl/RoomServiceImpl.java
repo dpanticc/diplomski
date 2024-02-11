@@ -60,6 +60,11 @@ public class RoomServiceImpl implements RoomService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Set<Room> getRoomsByIds(List<Long> roomIds) {
+        return roomRepository.getRoomsByRoomIdIn(roomIds);
+    }
+
     private boolean isValidPurposeForRoom(String roomDetails, String purpose) {
         String roomDetailsLowerCase = roomDetails.toLowerCase();
 

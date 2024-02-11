@@ -60,4 +60,6 @@ public class UserServiceImpl implements UserService {
         User updatedUser = userRepository.save(existingUser);
         return UserDTO.fromEntity(updatedUser);
     }
+
+
 }

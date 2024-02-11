@@ -1,6 +1,7 @@
 package com.dusanpan.reservation.repository;
 
 import com.dusanpan.reservation.domain.User;
+import com.dusanpan.reservation.dto.UserDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,9 +22,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "SET u.enabled = true WHERE u.email = :email")
     int enableUser(@Param("email") String email);
 
-
     User findByUsernameOrEmail(String username, String email);
+
     List<User> findAll();
 
     User getByUsername(String username);
+
+    User getUserByUsername(String username);
 }
