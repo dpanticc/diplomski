@@ -33,4 +33,11 @@ public class GlobalExceptionHandler {
         errorObject.setTimestamp(new Date());
         return new ResponseEntity<>(errorObject, status);
     }
+
+    @ExceptionHandler(TimeSlotUnavailableException.class)
+    public ResponseEntity<ErrorObject> handleTimeSlotUnavailableException(TimeSlotUnavailableException ex, WebRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+
 }

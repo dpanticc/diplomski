@@ -7,6 +7,7 @@ import com.dusanpan.reservation.dto.ReservationDTO;
 import com.dusanpan.reservation.dto.ReservationTimeSlotDTO;
 import com.dusanpan.reservation.dto.TimeSlotDTO;
 import com.dusanpan.reservation.dto.UserDTO;
+import com.dusanpan.reservation.exception.ErrorObject;
 import com.dusanpan.reservation.service.ReservationService;
 import com.dusanpan.reservation.service.RoomService;
 import com.dusanpan.reservation.service.TimeSlotService;
@@ -22,6 +23,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
 
     private final UserService userService;
@@ -89,20 +91,25 @@ public class UserController {
                 return ResponseEntity.badRequest().body("TimeSlotDTO is null");
             }
 
-            // Perform necessary business logic (e.g., check room availability, validate user input)
-
             // Assuming you have a service method to create reservations
-            ReservationDTO createdReservation = reservationService.createReservation(reservationDTO, timeSlotDTO);
+            ResponseEntity<?> responseEntity = reservationService.createReservation(reservationDTO, timeSlotDTO);
 
-            System.out.println("Reservation created successfully: " + createdReservation);
-
-            // Return the created reservation DTO in the response body
-            return ResponseEntity.ok(createdReservation);
+            if (responseEntity.getBody() instanceof ReservationDTO) {
+                // Reservation created successfully, return the reservation DTO
+                ReservationDTO createdReservation = (ReservationDTO) responseEntity.getBody();
+                System.out.println("Reservation created successfully: " + createdReservation);
+                return ResponseEntity.ok(createdReservation);
+            } else {
+                // Error occurred, return the error object
+                ErrorObject errorObject = (ErrorObject) responseEntity.getBody();
+                return ResponseEntity.status(responseEntity.getStatusCode()).body(errorObject);
+            }
         } catch (Exception e) {
             System.out.println("Error creating reservation: " + e.getMessage());
             // Log the exception or return a custom error response
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
 }

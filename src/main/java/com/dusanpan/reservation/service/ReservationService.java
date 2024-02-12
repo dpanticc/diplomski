@@ -2,7 +2,8 @@ package com.dusanpan.reservation.service;
 
 import com.dusanpan.reservation.dto.ReservationDTO;
 import com.dusanpan.reservation.dto.TimeSlotDTO;
+import org.springframework.http.ResponseEntity;
 
 public interface ReservationService {
-    ReservationDTO createReservation(ReservationDTO reservationDTO, TimeSlotDTO selectedTimeSlot);
+    ResponseEntity<?> createReservation(ReservationDTO reservationDTO, TimeSlotDTO selectedTimeSlot);
 }
