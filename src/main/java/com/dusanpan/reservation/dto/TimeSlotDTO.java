@@ -1,4 +1,5 @@
 package com.dusanpan.reservation.dto;
+import com.dusanpan.reservation.domain.ReservationStatus;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ public class TimeSlotDTO {
     private String date; // Assuming date is in string format
     private String startTime; // Assuming startTime is in string format
     private String endTime; // Assuming endTime is in string format
-    private boolean reserved;
+    private ReservationStatus status;
 
     // Format date and parse
     public LocalDate getDateAsLocalDate() {

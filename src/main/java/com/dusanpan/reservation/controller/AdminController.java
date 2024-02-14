@@ -1,12 +1,15 @@
 package com.dusanpan.reservation.controller;
 import com.dusanpan.reservation.domain.Room;
+import com.dusanpan.reservation.dto.PendingReservationDTO;
 import com.dusanpan.reservation.repository.ConfirmationTokenRepository;
 import com.dusanpan.reservation.repository.TokenRepository;
 import com.dusanpan.reservation.domain.User;
 import com.dusanpan.reservation.repository.UserRepository;
 import com.dusanpan.reservation.service.AdminService;
+import com.dusanpan.reservation.service.ReservationService;
 import com.dusanpan.reservation.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +22,7 @@ public class AdminController {
 
     private final AdminService adminService;
     private final RoomService roomService;
+    private final ReservationService reservationService;
 
     @GetMapping("/users")
     public List<User> getAllUsers(){
@@ -49,5 +53,17 @@ public class AdminController {
     @PutMapping("/rooms/{id}")
     public ResponseEntity<Room> updateRoom(@PathVariable Long id, @RequestBody Room updatedRoom){
         return roomService.update(id, updatedRoom);
+    }
+
+    @GetMapping("/reservations/pending")
+    public ResponseEntity<List<PendingReservationDTO>> getPendingReservations() {
+        List<PendingReservationDTO> pendingReservations = reservationService.getPendingReservations();
+        return new ResponseEntity<>(pendingReservations, HttpStatus.OK);
+    }
+
+    @GetMapping("/rooms/{roomId}/name")
+    public ResponseEntity<String> getRoomNameById(@PathVariable Long roomId) {
+        String roomName = roomService.getRoomNameById(roomId);
+        return ResponseEntity.ok(roomName);
     }
 }

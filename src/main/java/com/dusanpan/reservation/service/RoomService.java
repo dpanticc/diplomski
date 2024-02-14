@@ -18,4 +18,6 @@ public interface RoomService {
     List<Room> getRoomsByPurpose(String purpose);
 
     Set<Room> getRoomsByIds(List<Long> roomIds);
+
+    String getRoomNameById(Long roomId);
 }

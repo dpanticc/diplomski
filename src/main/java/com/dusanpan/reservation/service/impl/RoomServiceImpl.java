@@ -65,6 +65,12 @@ public class RoomServiceImpl implements RoomService {
         return roomRepository.getRoomsByRoomIdIn(roomIds);
     }
 
+    @Override
+    public String getRoomNameById(Long roomId) {
+        Room room = roomRepository.findById(roomId).orElse(null);
+        return room != null ? room.getName() : null;
+    }
+
     private boolean isValidPurposeForRoom(String roomDetails, String purpose) {
         String roomDetailsLowerCase = roomDetails.toLowerCase();
 

@@ -29,8 +29,9 @@ public class TimeSlot {
     @Column
     private LocalTime endTime;
 
-    @Column
-    private boolean reserved;
+    @Column(columnDefinition = "reservation_status", name = "status")
+    @Enumerated(EnumType.STRING)
+    private ReservationStatus status;
 
     @ManyToOne
     @JoinColumn(name = "reservation_id", nullable = false)

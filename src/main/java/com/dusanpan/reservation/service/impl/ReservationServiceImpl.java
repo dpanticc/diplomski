@@ -1,9 +1,7 @@
 package com.dusanpan.reservation.service.impl;
 
-import com.dusanpan.reservation.domain.Reservation;
-import com.dusanpan.reservation.domain.Room;
-import com.dusanpan.reservation.domain.TimeSlot;
-import com.dusanpan.reservation.domain.User;
+import com.dusanpan.reservation.domain.*;
+import com.dusanpan.reservation.dto.PendingReservationDTO;
 import com.dusanpan.reservation.dto.ReservationDTO;
 import com.dusanpan.reservation.dto.TimeSlotDTO;
 import com.dusanpan.reservation.dto.UserDTO;
@@ -52,6 +50,8 @@ public class ReservationServiceImpl implements ReservationService {
             // Assuming the date format is "dd.MM.yyyy" and time format is "HH:mm"
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            ReservationStatus reservationStatus = selectedTimeSlot.getStatus();
+
 
             LocalDate date = LocalDate.parse(selectedTimeSlot.getDate(), dateFormatter);
             LocalTime startTime = LocalTime.parse(selectedTimeSlot.getStartTime(), timeFormatter);
@@ -86,18 +86,8 @@ public class ReservationServiceImpl implements ReservationService {
             // Save the reservation entity
             reservationRepository.save(reservation);
 
-            // Parsing the strings into LocalDate and LocalTime objects
-
-            // Create and save the time slot entity
-            TimeSlot timeSlot = new TimeSlot();
-            timeSlot.setReservation(reservation);
-            timeSlot.setDate(date);
-            timeSlot.setStartTime(startTime);
-            timeSlot.setEndTime(endTime);
-            timeSlot.setReserved(selectedTimeSlot.isReserved());
-
             // Save the time slot entity
-            timeSlotRepository.save(timeSlot);
+            timeSlotRepository.saveTimeSlot(date, startTime, endTime, reservation.getReservationId(), reservationStatus.name());
 
             System.out.println("Reservation and timeslot created successfully!");
 
@@ -112,6 +102,17 @@ public class ReservationServiceImpl implements ReservationService {
             errorObject.setTimestamp(new Date());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorObject);
         }
+    }
+
+    @Override
+    public List<PendingReservationDTO> getPendingReservations() {
+        // Assuming you have a method in your repository to fetch pending reservations
+        List<TimeSlot> pendingTimeSlots = timeSlotRepository.findByStatus("PENDING");
+
+        // Convert the list of TimeSlot entities to a list of PendingReservationDTOs
+        return pendingTimeSlots.stream()
+                .map(timeSlot -> PendingReservationDTO.fromEntity(timeSlot.getReservation(), timeSlot))
+                .collect(Collectors.toList());
     }
 
 }
