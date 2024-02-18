@@ -6,4 +6,4 @@ public enum ReservationStatus {
     RESERVED,
     PENDING,
     CANCELED
-}l
+}
