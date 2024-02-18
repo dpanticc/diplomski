@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 @Getter
 @Setter
-public class PendingReservationDTO {
+public class FetchReservationDTO {
     private Long reservationId;
     private String name;
     private String purpose;
@@ -24,8 +24,8 @@ public class PendingReservationDTO {
     private LocalTime endTime;
     private ReservationStatus status;
 
-    public static PendingReservationDTO fromEntity(Reservation reservation, TimeSlot timeSlot) {
-        PendingReservationDTO dto = new PendingReservationDTO();
+    public static FetchReservationDTO fromEntity(Reservation reservation, TimeSlot timeSlot) {
+        FetchReservationDTO dto = new FetchReservationDTO();
         dto.setReservationId(reservation.getReservationId());
         dto.setName(reservation.getName());
         dto.setPurpose(reservation.getPurpose());
@@ -38,8 +38,8 @@ public class PendingReservationDTO {
         return dto;
     }
 
-    public static PendingReservationDTO fromTimeSlotEntity(TimeSlot timeSlot) {
-        PendingReservationDTO dto = new PendingReservationDTO();
+    public static FetchReservationDTO fromTimeSlotEntity(TimeSlot timeSlot) {
+        FetchReservationDTO dto = new FetchReservationDTO();
         dto.setReservationId(timeSlot.getReservation().getReservationId());
         dto.setName(timeSlot.getReservation().getName());
         dto.setPurpose(timeSlot.getReservation().getPurpose());

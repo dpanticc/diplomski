@@ -1,10 +1,7 @@
 package com.dusanpan.reservation.controller;
 import com.dusanpan.reservation.domain.Room;
-import com.dusanpan.reservation.dto.PendingReservationDTO;
-import com.dusanpan.reservation.repository.ConfirmationTokenRepository;
-import com.dusanpan.reservation.repository.TokenRepository;
+import com.dusanpan.reservation.dto.FetchReservationDTO;
 import com.dusanpan.reservation.domain.User;
-import com.dusanpan.reservation.repository.UserRepository;
 import com.dusanpan.reservation.service.AdminService;
 import com.dusanpan.reservation.service.ReservationService;
 import com.dusanpan.reservation.service.RoomService;
@@ -55,15 +52,34 @@ public class AdminController {
         return roomService.update(id, updatedRoom);
     }
 
-    @GetMapping("/reservations/pending")
-    public ResponseEntity<List<PendingReservationDTO>> getPendingReservations() {
-        List<PendingReservationDTO> pendingReservations = reservationService.getPendingReservations();
-        return new ResponseEntity<>(pendingReservations, HttpStatus.OK);
-    }
-
     @GetMapping("/rooms/{roomId}/name")
     public ResponseEntity<String> getRoomNameById(@PathVariable Long roomId) {
         String roomName = roomService.getRoomNameById(roomId);
         return ResponseEntity.ok(roomName);
     }
+
+    @GetMapping("/reservations/pending")
+    public ResponseEntity<List<FetchReservationDTO>> getPendingReservations() {
+        List<FetchReservationDTO> pendingReservations = reservationService.getPendingReservations();
+        return new ResponseEntity<>(pendingReservations, HttpStatus.OK);
+    }
+
+    @GetMapping("/reservations/accepted")
+    public ResponseEntity<List<FetchReservationDTO>> getAcceptedReservations() {
+        List<FetchReservationDTO> acceptedReservations = reservationService.getAcceptedReservations();
+        return new ResponseEntity<>(acceptedReservations, HttpStatus.OK);
+    }
+
+    @PutMapping("/reservations/accept/{reservationId}")
+    public ResponseEntity<Void> acceptReservation(@PathVariable Long reservationId) {
+        // Assuming you have a service method to handle the acceptance logic
+        boolean isAccepted = reservationService.acceptReservation(reservationId);
+
+        if (isAccepted) {
+            return ResponseEntity.ok().build(); // Return 200 OK if accepted
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Return an error status if not accepted
+        }
+    }
+
 }

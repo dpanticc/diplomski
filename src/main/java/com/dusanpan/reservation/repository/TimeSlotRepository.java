@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
@@ -30,4 +31,11 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
 
     @Query(value = "SELECT * FROM time_slots WHERE status = CAST(?1 AS reservation_status)", nativeQuery = true)
     List<TimeSlot> findByStatus(String status);
+
+    Optional<TimeSlot> findByReservation(Reservation reservation);
+
+    @Modifying
+    @Query(value = "UPDATE time_slots SET date = ?1, end_time = CAST(?2 AS time), reservation_id = ?3, start_time = CAST(?4 AS time), status = CAST(?5 AS reservation_status) WHERE time_slot_id = ?6", nativeQuery = true)
+    void updateTimeSlot(LocalDate date, LocalTime startTime, Long reservationId, LocalTime endTime, String status, Long timeSlotId);
+
 }
