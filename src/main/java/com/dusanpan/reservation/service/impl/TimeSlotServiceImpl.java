@@ -7,8 +7,6 @@ import com.dusanpan.reservation.repository.RoomRepository;
 import com.dusanpan.reservation.repository.TimeSlotRepository;
 import com.dusanpan.reservation.service.TimeSlotService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

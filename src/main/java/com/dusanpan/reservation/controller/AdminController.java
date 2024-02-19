@@ -82,4 +82,16 @@ public class AdminController {
         }
     }
 
+    @PutMapping("/reservations/decline/{reservationId}")
+    public ResponseEntity<Void> declineReservation(@PathVariable Long reservationId) {
+        // Assuming you have a service method to handle the acceptance logic
+        boolean isDeclined = reservationService.declineReservation(reservationId);
+
+        if (isDeclined) {
+            return ResponseEntity.ok().build(); // Return 200 OK if accepted
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Return an error status if not accepted
+        }
+    }
+
 }

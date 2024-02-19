@@ -135,7 +135,7 @@ public class ReservationServiceImpl implements ReservationService {
                     TimeSlot timeSlot = optionalTimeSlot.get();
 
                     // Check if the status transition is valid
-                    if (timeSlot.getStatus() == ReservationStatus.PENDING) {
+                    if (timeSlot.getStatus() == ReservationStatus.PENDING ) {
                         // Perform any logic related to accepting the reservation
 
 
@@ -146,15 +146,74 @@ public class ReservationServiceImpl implements ReservationService {
                         // Save the updated time slot with the string representation of ReservationStatus
                         timeSlotRepository.updateTimeSlot(
                                 timeSlot.getDate(),
-                                timeSlot.getStartTime(),
-                                timeSlot.getReservation().getReservationId(),
                                 timeSlot.getEndTime(),
+                                timeSlot.getReservation().getReservationId(),
+                                timeSlot.getStartTime(),
                                 "RESERVED",
                                 timeSlot.getTimeSlotId()
                         );
 
                         // Log success message
                         System.out.println("Reservation accepted successfully");
+
+                        return true; // Return true if the reservation is accepted
+                    } else {
+                        // Handle the case where the status transition is not valid
+                        System.err.println("Invalid status transition for reservation ID: " + reservationId);
+                        return false;
+                    }
+                } else {
+                    // Handle the case where the associated time slot is not found
+                    System.err.println("Associated time slot not found for reservation ID: " + reservationId);
+                    return false;
+                }
+            } else {
+                // Handle the case where the reservation is not found
+                System.err.println("Reservation not found with ID: " + reservationId);
+                return false;
+            }
+        } catch (Exception e) {
+            // Log or handle exceptions as needed
+            System.err.println("Error accepting reservation with ID: " + reservationId);
+            e.printStackTrace();
+            return false; // Return false in case of an exception
+        }
+    }
+
+    @Override
+    @Transactional
+    public boolean declineReservation(Long reservationId) {
+        try {
+            Optional<Reservation> optionalReservation = reservationRepository.findById(reservationId);
+
+            if (optionalReservation.isPresent()) {
+                Reservation reservation = optionalReservation.get();
+
+                Optional<TimeSlot> optionalTimeSlot = timeSlotRepository.findByReservation(reservation);
+
+                if (optionalTimeSlot.isPresent()) {
+                    TimeSlot timeSlot = optionalTimeSlot.get();
+
+                    // Check if the status transition is valid
+                    if (timeSlot.getStatus() == ReservationStatus.PENDING || timeSlot.getStatus() == ReservationStatus.RESERVED) {
+                        // Perform any logic related to accepting the reservation
+
+
+                        // Log the information before saving
+                        System.out.println("Canceling reservation with ID: " + reservationId);
+
+                        // Save the updated time slot with the string representation of ReservationStatus
+                        timeSlotRepository.updateTimeSlot(
+                                timeSlot.getDate(),
+                                timeSlot.getEndTime(),
+                                timeSlot.getReservation().getReservationId(),
+                                timeSlot.getStartTime(),
+                                "CANCELED",
+                                timeSlot.getTimeSlotId()
+                        );
+
+                        // Log success message
+                        System.out.println("Reservation canceled successfully");
 
                         return true; // Return true if the reservation is accepted
                     } else {
