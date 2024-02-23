@@ -15,4 +15,6 @@ public interface ReservationService {
     List<FetchReservationDTO> getAcceptedReservations();
 
     boolean acceptReservation(Long reservationId);
+
+    boolean declineReservation(Long reservationId);
 }
