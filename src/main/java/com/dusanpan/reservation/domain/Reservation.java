@@ -27,9 +27,6 @@ public class Reservation {
     private String purpose;
 
     @Column
-    private String subjectName;
-
-    @Column
     private String semester;
 
     @Column
@@ -39,7 +36,10 @@ public class Reservation {
     private String studyLevel;  // (OAS, MAS, SAS ili DAS)
 
     @Column
-    private String thesisDetails;
+    private String thesisSupervisor;
+
+    @Column
+    private String thesisCommitteeMembers;
 
     @Column
     private String projectOrganization;
