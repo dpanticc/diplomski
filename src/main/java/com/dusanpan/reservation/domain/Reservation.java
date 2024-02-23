@@ -26,6 +26,30 @@ public class Reservation {
     @Column
     private String purpose;
 
+    @Column
+    private String subjectName;
+
+    @Column
+    private String semester;
+
+    @Column
+    private String lessonType;
+
+    @Column
+    private String studyLevel;  // (OAS, MAS, SAS ili DAS)
+
+    @Column
+    private String thesisDetails;
+
+    @Column
+    private String projectOrganization;
+
+    @Column
+    private String projectName;
+
+    @Column
+    private String projectDescription;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

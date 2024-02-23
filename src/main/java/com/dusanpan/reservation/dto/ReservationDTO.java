@@ -16,6 +16,14 @@ public class ReservationDTO {
     private Long reservationId;
     private String name;
     private String purpose;
+    private String subjectName;
+    private String semester;
+    private String lessonType;
+    private String studyLevel;
+    private String thesisDetails;
+    private String projectOrganization;
+    private String projectName;
+    private String projectDescription;
     private String username; // Changed to store username directly
     private List<Long> roomIds; // Changed to store room IDs
 
@@ -26,8 +34,17 @@ public class ReservationDTO {
         dto.setReservationId(reservation.getReservationId());
         dto.setName(reservation.getName());
         dto.setPurpose(reservation.getPurpose());
-        dto.setUsername(reservation.getUser().getUsername()); // Set username directly
-        dto.setRoomIds(reservation.getRooms().stream().map(Room::getRoomId).collect(Collectors.toList())); // Map room IDs
+        dto.setUsername(reservation.getUser().getUsername());
+        dto.setRoomIds(reservation.getRooms().stream().map(Room::getRoomId).collect(Collectors.toList()));
+        dto.setSubjectName(reservation.getSubjectName());
+        dto.setSemester(reservation.getSemester());
+        dto.setLessonType(reservation.getLessonType());
+        dto.setStudyLevel(reservation.getStudyLevel());
+        dto.setThesisDetails(reservation.getThesisDetails());
+        dto.setProjectOrganization(reservation.getProjectOrganization());
+        dto.setProjectName(reservation.getProjectName());
+        dto.setProjectDescription(reservation.getProjectDescription());
+
         return dto;
     }
 
@@ -36,6 +53,14 @@ public class ReservationDTO {
         reservation.setReservationId(this.reservationId);
         reservation.setName(this.name);
         reservation.setPurpose(this.purpose);
+        reservation.setSubjectName(this.subjectName);
+        reservation.setSemester(this.semester);
+        reservation.setLessonType(this.lessonType);
+        reservation.setStudyLevel(this.studyLevel);
+        reservation.setThesisDetails(this.thesisDetails);
+        reservation.setProjectOrganization(this.projectOrganization);
+        reservation.setProjectName(this.projectName);
+        reservation.setProjectDescription(this.projectDescription);
         // You might need to fetch the User entity based on username and set it to reservation
         // Similarly, you may need to fetch Room entities based on roomIds and set them to reservation
         return reservation;

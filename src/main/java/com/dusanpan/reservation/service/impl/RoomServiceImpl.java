@@ -75,14 +75,12 @@ public class RoomServiceImpl implements RoomService {
         String roomDetailsLowerCase = roomDetails.toLowerCase();
 
         switch (purpose.toLowerCase()) {
-            case "lecture":
+            case "class":
             case "exam":
                 return Set.of("amphitheater", "lecture hall", "computer center").contains(roomDetailsLowerCase);
-            case "public meeting":
-                return Set.of("amphitheater", "meeting room").contains(roomDetailsLowerCase);
-            case "internal meeting":
-                return roomDetailsLowerCase.equals("meeting room");
-            case "conference":
+            case "thesis defense":
+                return Set.of("lecture hall", "computer center", "meeting room").contains(roomDetailsLowerCase);
+            case "student org. project":
                 return roomDetailsLowerCase.equals("amphitheater");
             default:
                 return false;

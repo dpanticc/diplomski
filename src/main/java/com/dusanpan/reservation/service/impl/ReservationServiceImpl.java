@@ -77,6 +77,15 @@ public class ReservationServiceImpl implements ReservationService {
             Set<Room> roomList = roomRepository.getRoomsByRoomIdIn(roomIds);
             reservation.setRooms(roomList);
 
+            reservation.setSubjectName(reservationDTO.getSubjectName());
+            reservation.setSemester(reservationDTO.getSemester());
+            reservation.setLessonType(reservationDTO.getLessonType());
+            reservation.setStudyLevel(reservationDTO.getStudyLevel());
+            reservation.setThesisDetails(reservationDTO.getThesisDetails());
+            reservation.setProjectOrganization(reservationDTO.getProjectOrganization());
+            reservation.setProjectName(reservationDTO.getProjectName());
+            reservation.setProjectDescription(reservationDTO.getProjectDescription());
+
             // Save the reservation entity
             reservationRepository.save(reservation);
 
