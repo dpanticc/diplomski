@@ -27,7 +27,7 @@ public class Reservation {
     private String purpose;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false) // Corrected column name
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
