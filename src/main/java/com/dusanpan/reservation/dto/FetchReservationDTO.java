@@ -11,12 +11,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Getter
 @Setter
 public class FetchReservationDTO {
     private Long reservationId;
     private String name;
-    private String purpose;
     private String username;
     private List<Long> roomIds;
     private LocalDate date;
@@ -28,7 +28,6 @@ public class FetchReservationDTO {
         FetchReservationDTO dto = new FetchReservationDTO();
         dto.setReservationId(reservation.getReservationId());
         dto.setName(reservation.getName());
-        dto.setPurpose(reservation.getPurpose());
         dto.setUsername(reservation.getUser().getUsername());
         dto.setRoomIds(reservation.getRooms().stream().map(Room::getRoomId).collect(Collectors.toList()));
         dto.setDate(timeSlot.getDate());
@@ -42,7 +41,6 @@ public class FetchReservationDTO {
         FetchReservationDTO dto = new FetchReservationDTO();
         dto.setReservationId(timeSlot.getReservation().getReservationId());
         dto.setName(timeSlot.getReservation().getName());
-        dto.setPurpose(timeSlot.getReservation().getPurpose());
         dto.setUsername(timeSlot.getReservation().getUser().getUsername());
         dto.setRoomIds(timeSlot.getReservation().getRooms().stream().map(Room::getRoomId).collect(Collectors.toList()));
         dto.setDate(timeSlot.getDate());

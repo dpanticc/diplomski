@@ -23,32 +23,8 @@ public class Reservation {
     @Column
     private String name;
 
-    @Column
-    private String purpose;
-
-    @Column
-    private String semester;
-
-    @Column
-    private String lessonType;
-
-    @Column
-    private String studyLevel;  // (OAS, MAS, SAS ili DAS)
-
-    @Column
-    private String thesisSupervisor;
-
-    @Column
-    private String thesisCommitteeMembers;
-
-    @Column
-    private String projectOrganization;
-
-    @Column
-    private String projectName;
-
-    @Column
-    private String projectDescription;
+    @OneToMany(mappedBy = "reservation", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Purpose> purposes;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -61,4 +37,6 @@ public class Reservation {
             inverseJoinColumns = @JoinColumn(name = "room_id")
     )
     private Set<Room> rooms;
+
+
 }

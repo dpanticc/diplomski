@@ -1,15 +1,16 @@
 package com.dusanpan.reservation.service.impl;
 
 import com.dusanpan.reservation.domain.*;
+import com.dusanpan.reservation.domain.purpose.ClassPurpose;
+import com.dusanpan.reservation.domain.purpose.ExamPurpose;
+import com.dusanpan.reservation.domain.purpose.StudentOrgProjectPurpose;
+import com.dusanpan.reservation.domain.purpose.ThesisDefensePurpose;
 import com.dusanpan.reservation.dto.FetchReservationDTO;
 import com.dusanpan.reservation.dto.ReservationDTO;
 import com.dusanpan.reservation.dto.TimeSlotDTO;
 import com.dusanpan.reservation.exception.ErrorObject;
 import com.dusanpan.reservation.exception.TimeSlotUnavailableException;
-import com.dusanpan.reservation.repository.ReservationRepository;
-import com.dusanpan.reservation.repository.RoomRepository;
-import com.dusanpan.reservation.repository.TimeSlotRepository;
-import com.dusanpan.reservation.repository.UserRepository;
+import com.dusanpan.reservation.repository.*;
 import com.dusanpan.reservation.service.ReservationService;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +34,10 @@ public class ReservationServiceImpl implements ReservationService {
     private final TimeSlotRepository timeSlotRepository;
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
+    private final ExamPurpuseRepository examPurpuseRepository;
+    private final ClassPurposeRepository classPurposeRepository;
+    private final StudentOrgProjectPurposeRepository studentOrgProjectPurposeRepository;
+    private final ThesisDefensePurposeRepository thesisDefensePurposeRepository;
 
     @Override
     @Transactional
@@ -45,7 +50,6 @@ public class ReservationServiceImpl implements ReservationService {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
             ReservationStatus reservationStatus = selectedTimeSlot.getStatus();
-
 
             LocalDate date = LocalDate.parse(selectedTimeSlot.getDate(), dateFormatter);
             LocalTime startTime = LocalTime.parse(selectedTimeSlot.getStartTime(), timeFormatter);
@@ -66,28 +70,64 @@ public class ReservationServiceImpl implements ReservationService {
                 }
             }
 
-
             // Convert ReservationDTO to Reservation entity
             Reservation reservation = new Reservation();
             reservation.setName(reservationDTO.getName());
-            reservation.setPurpose(reservationDTO.getPurpose());
-            reservation.setUser(user); // Convert UserDTO to User entity
+            reservation.setUser(user);
             // Assuming roomIds are provided in ReservationDTO and converted to List<Long> in Reservation
             List<Long> roomIds = reservationDTO.getRoomIds();
             Set<Room> roomList = roomRepository.getRoomsByRoomIdIn(roomIds);
             reservation.setRooms(roomList);
 
-            reservation.setSemester(reservationDTO.getSemester());
-            reservation.setThesisSupervisor(reservationDTO.getThesisSupervisor());
-            reservation.setThesisCommitteeMembers(reservationDTO.getThesisCommitteeMembers());
-            reservation.setLessonType(reservationDTO.getLessonType());
-            reservation.setStudyLevel(reservationDTO.getStudyLevel());
-            reservation.setProjectOrganization(reservationDTO.getProjectOrganization());
-            reservation.setProjectName(reservationDTO.getProjectName());
-            reservation.setProjectDescription(reservationDTO.getProjectDescription());
-
             // Save the reservation entity
             reservationRepository.save(reservation);
+
+            // Set additional attributes based on the purpose
+            Purpose purpose;
+            switch (reservationDTO.getPurpose()) {
+                case "Class":
+                    ClassPurpose classPurpose = new ClassPurpose();
+                    classPurpose.setPurposeName("Class");
+                    classPurpose.setTypeOfClass(reservationDTO.getTypeOfClass());
+                    classPurpose.setSemester(reservationDTO.getSemester());
+                    classPurpose.setStudyLevel(reservationDTO.getStudyLevel());
+                    classPurpose.setReservation(reservation);
+                    classPurposeRepository.save(classPurpose);
+                    purpose = classPurpose;
+                    break;
+                case "Exam":
+                    ExamPurpose examPurpose = new ExamPurpose();
+                    examPurpose.setPurposeName("Exam");
+                    examPurpose.setSemester(reservationDTO.getSemester());
+                    examPurpose.setStudyLevel(reservationDTO.getStudyLevel());
+                    examPurpose.setReservation(reservation);
+                    examPurpuseRepository.save(examPurpose);
+                    purpose = examPurpose;
+                    break;
+                case "Thesis Defense":
+                    ThesisDefensePurpose thesisDefensePurpose = new ThesisDefensePurpose();
+                    thesisDefensePurpose.setPurposeName("Thesis Defense"); // Set purpose name
+                    thesisDefensePurpose.setThesisLevel(reservationDTO.getStudyLevel());
+                    thesisDefensePurpose.setSupervisor(reservationDTO.getThesisSupervisor());
+                    thesisDefensePurpose.setCommitteeMembers(reservationDTO.getThesisCommitteeMembers());
+                    thesisDefensePurpose.setReservation(reservation);
+                    purpose = thesisDefensePurpose;
+                    break;
+                case "Student Org. Project":
+                    StudentOrgProjectPurpose studentOrgProjectPurpose = new StudentOrgProjectPurpose();
+                    studentOrgProjectPurpose.setPurposeName("Student Org. Project"); // Set purpose name
+                    studentOrgProjectPurpose.setStudentOrganization(reservationDTO.getProjectOrganization());
+                    studentOrgProjectPurpose.setProjectName(reservationDTO.getProjectName());
+                    studentOrgProjectPurpose.setProjectDescription(reservationDTO.getProjectDescription());
+                    studentOrgProjectPurpose.setReservation(reservation);
+                    purpose = studentOrgProjectPurpose;
+                    break;
+                default:
+                    // Handle unsupported purpose or throw an exception
+                    throw new IllegalArgumentException("Unsupported purpose: " + reservationDTO.getPurpose());
+            }
+
+            reservation.setPurposes(Set.of(purpose));
 
             // Save the time slot entity
             timeSlotRepository.saveTimeSlot(date, startTime, endTime, reservation.getReservationId(), reservationStatus.name());
@@ -98,6 +138,8 @@ public class ReservationServiceImpl implements ReservationService {
             ReservationDTO createdReservationDTO = ReservationDTO.fromEntity(reservation);
             return ResponseEntity.ok(createdReservationDTO);
         } catch (TimeSlotUnavailableException e) {
+            e.printStackTrace(); // or log the exception
+
             // Handle the exception and return an error response
             ErrorObject errorObject = new ErrorObject();
             errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -106,6 +148,7 @@ public class ReservationServiceImpl implements ReservationService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorObject);
         }
     }
+
 
     @Override
     public List<FetchReservationDTO> getPendingReservations() {

@@ -3,7 +3,10 @@ package com.dusanpan.reservation.dto;
 import com.dusanpan.reservation.domain.Reservation;
 import com.dusanpan.reservation.domain.Room;
 
-import jakarta.persistence.Column;
+import com.dusanpan.reservation.domain.purpose.ClassPurpose;
+import com.dusanpan.reservation.domain.purpose.ExamPurpose;
+import com.dusanpan.reservation.domain.purpose.StudentOrgProjectPurpose;
+import com.dusanpan.reservation.domain.purpose.ThesisDefensePurpose;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +21,7 @@ public class ReservationDTO {
     private String name;
     private String purpose;
     private String semester;
-    private String lessonType;
+    private String typeOfClass;
     private String studyLevel;
     private String thesisSupervisor;
     private String thesisCommitteeMembers;
@@ -28,41 +31,50 @@ public class ReservationDTO {
     private String username; // Changed to store username directly
     private List<Long> roomIds; // Changed to store room IDs
 
-    // getters and setters
-
     public static ReservationDTO fromEntity(Reservation reservation) {
         ReservationDTO dto = new ReservationDTO();
         dto.setReservationId(reservation.getReservationId());
         dto.setName(reservation.getName());
-        dto.setPurpose(reservation.getPurpose());
         dto.setUsername(reservation.getUser().getUsername());
         dto.setRoomIds(reservation.getRooms().stream().map(Room::getRoomId).collect(Collectors.toList()));
-        dto.setSemester(reservation.getSemester());
-        dto.setLessonType(reservation.getLessonType());
-        dto.setStudyLevel(reservation.getStudyLevel());
-        dto.setThesisSupervisor(reservation.getThesisSupervisor());
-        dto.setThesisCommitteeMembers(reservation.getThesisCommitteeMembers());
-        dto.setProjectOrganization(reservation.getProjectOrganization());
-        dto.setProjectName(reservation.getProjectName());
-        dto.setProjectDescription(reservation.getProjectDescription());
+
+        // Set additional attributes based on the purpose
+        reservation.getPurposes().forEach(purpose -> {
+            switch (purpose.getPurposeName()) {
+                case "Class":
+                    // Extract attributes for ClassPurpose
+                    ClassPurpose classPurpose = (ClassPurpose) purpose;
+                    dto.setSemester(classPurpose.getSemester());
+                    dto.setTypeOfClass(classPurpose.getTypeOfClass());
+                    dto.setStudyLevel(classPurpose.getStudyLevel());
+                    break;
+                case "Exam":
+                    // Extract attributes for ExamPurpose
+                    ExamPurpose examPurpose = (ExamPurpose) purpose;
+                    dto.setSemester(examPurpose.getSemester());
+                    dto.setStudyLevel(examPurpose.getStudyLevel());
+                    break;
+                case "Thesis Defense":
+                    // Extract attributes for ThesisDefensePurpose
+                    ThesisDefensePurpose thesisDefensePurpose = (ThesisDefensePurpose) purpose;
+                    dto.setStudyLevel(thesisDefensePurpose.getThesisLevel());
+                    dto.setThesisSupervisor(thesisDefensePurpose.getSupervisor());
+                    // Assuming committeeMembers is a list of strings
+                    dto.setThesisCommitteeMembers(thesisDefensePurpose.getCommitteeMembers().toString());
+                    break;
+                case "Student Org. Project":
+                    // Extract attributes for StudentOrgProjectPurpose
+                    StudentOrgProjectPurpose studentOrgProjectPurpose = (StudentOrgProjectPurpose) purpose;
+                    dto.setProjectOrganization(studentOrgProjectPurpose.getStudentOrganization());
+                    dto.setProjectName(studentOrgProjectPurpose.getProjectName());
+                    dto.setProjectDescription(studentOrgProjectPurpose.getProjectDescription());
+                    break;
+                default:
+                    // Handle unsupported purpose or throw an exception
+                    throw new IllegalArgumentException("Unsupported purpose: " + purpose.getPurposeName());
+            }
+        });
 
         return dto;
-    }
-
-    public Reservation toEntity() {
-        Reservation reservation = new Reservation();
-        reservation.setReservationId(this.reservationId);
-        reservation.setName(this.name);
-        reservation.setPurpose(this.purpose);
-        reservation.setSemester(this.semester);
-        reservation.setLessonType(this.lessonType);
-        reservation.setStudyLevel(this.studyLevel);
-        reservation.setThesisSupervisor(this.thesisSupervisor);
-        reservation.setThesisCommitteeMembers(this.thesisCommitteeMembers);
-        reservation.setProjectOrganization(this.projectOrganization);
-        reservation.setProjectName(this.projectName);
-        reservation.setProjectDescription(this.projectDescription);
-
-        return reservation;
     }
 }
