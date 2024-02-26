@@ -22,7 +22,7 @@ public abstract class Purpose {
     @Column
     private String purposeName;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
 

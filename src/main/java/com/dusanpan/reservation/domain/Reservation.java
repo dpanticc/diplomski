@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Set;
-
 @Entity
 @Table(name = "reservations")
 @Getter
@@ -37,6 +36,5 @@ public class Reservation {
             inverseJoinColumns = @JoinColumn(name = "room_id")
     )
     private Set<Room> rooms;
-
-
 }
+

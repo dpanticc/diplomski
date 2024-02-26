@@ -80,7 +80,6 @@ public class ReservationServiceImpl implements ReservationService {
             reservation.setRooms(roomList);
 
             // Save the reservation entity
-            reservationRepository.save(reservation);
 
             // Set additional attributes based on the purpose
             Purpose purpose;
@@ -92,8 +91,10 @@ public class ReservationServiceImpl implements ReservationService {
                     classPurpose.setSemester(reservationDTO.getSemester());
                     classPurpose.setStudyLevel(reservationDTO.getStudyLevel());
                     classPurpose.setReservation(reservation);
-                    classPurposeRepository.save(classPurpose);
                     purpose = classPurpose;
+                    reservation.setPurposes(Set.of(purpose));
+                    reservationRepository.save(reservation);
+                    classPurposeRepository.save(classPurpose);
                     break;
                 case "Exam":
                     ExamPurpose examPurpose = new ExamPurpose();
@@ -101,8 +102,10 @@ public class ReservationServiceImpl implements ReservationService {
                     examPurpose.setSemester(reservationDTO.getSemester());
                     examPurpose.setStudyLevel(reservationDTO.getStudyLevel());
                     examPurpose.setReservation(reservation);
-                    examPurpuseRepository.save(examPurpose);
                     purpose = examPurpose;
+                    reservation.setPurposes(Set.of(purpose));
+                    reservationRepository.save(reservation);
+                    examPurpuseRepository.save(examPurpose);
                     break;
                 case "Thesis Defense":
                     ThesisDefensePurpose thesisDefensePurpose = new ThesisDefensePurpose();
@@ -112,6 +115,9 @@ public class ReservationServiceImpl implements ReservationService {
                     thesisDefensePurpose.setCommitteeMembers(reservationDTO.getThesisCommitteeMembers());
                     thesisDefensePurpose.setReservation(reservation);
                     purpose = thesisDefensePurpose;
+                    reservation.setPurposes(Set.of(purpose));
+                    reservationRepository.save(reservation);
+                    thesisDefensePurposeRepository.save(thesisDefensePurpose);
                     break;
                 case "Student Org. Project":
                     StudentOrgProjectPurpose studentOrgProjectPurpose = new StudentOrgProjectPurpose();
@@ -121,6 +127,9 @@ public class ReservationServiceImpl implements ReservationService {
                     studentOrgProjectPurpose.setProjectDescription(reservationDTO.getProjectDescription());
                     studentOrgProjectPurpose.setReservation(reservation);
                     purpose = studentOrgProjectPurpose;
+                    reservation.setPurposes(Set.of(purpose));
+                    reservationRepository.save(reservation);
+                    studentOrgProjectPurposeRepository.save(studentOrgProjectPurpose);
                     break;
                 default:
                     // Handle unsupported purpose or throw an exception
