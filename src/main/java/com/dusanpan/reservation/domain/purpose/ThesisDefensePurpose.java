@@ -16,6 +16,7 @@ import java.util.List;
 @Getter
 public class ThesisDefensePurpose extends Purpose {
     private String thesisLevel;
+    private String theme;
     private String supervisor;
     private String committeeMembers;
 

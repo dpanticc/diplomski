@@ -112,6 +112,7 @@ public class ReservationServiceImpl implements ReservationService {
                     thesisDefensePurpose.setPurposeName("Thesis Defense"); // Set purpose name
                     thesisDefensePurpose.setThesisLevel(reservationDTO.getStudyLevel());
                     thesisDefensePurpose.setSupervisor(reservationDTO.getThesisSupervisor());
+                    thesisDefensePurpose.setTheme(reservationDTO.getTheme());
                     thesisDefensePurpose.setCommitteeMembers(reservationDTO.getThesisCommitteeMembers());
                     thesisDefensePurpose.setReservation(reservation);
                     purpose = thesisDefensePurpose;

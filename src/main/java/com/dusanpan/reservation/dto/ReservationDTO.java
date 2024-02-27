@@ -28,6 +28,7 @@ public class ReservationDTO {
     private String projectOrganization;
     private String projectName;
     private String projectDescription;
+    private String theme;
     private String username; // Changed to store username directly
     private List<Long> roomIds; // Changed to store room IDs
 
@@ -57,6 +58,7 @@ public class ReservationDTO {
                 case "Thesis Defense":
                     // Extract attributes for ThesisDefensePurpose
                     ThesisDefensePurpose thesisDefensePurpose = (ThesisDefensePurpose) purpose;
+                    dto.setTheme(thesisDefensePurpose.getTheme());
                     dto.setStudyLevel(thesisDefensePurpose.getThesisLevel());
                     dto.setThesisSupervisor(thesisDefensePurpose.getSupervisor());
                     // Assuming committeeMembers is a list of strings
