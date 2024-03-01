@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/api/user")
@@ -61,17 +62,29 @@ public class UserController {
         return ResponseEntity.ok(rooms);
     }
 
-    @GetMapping("/{roomId}/timeslots")
-    public ResponseEntity<?> getReservedTimeSlots(@PathVariable Long roomId, @RequestParam String date, @RequestParam String username) {
+    @GetMapping("/rooms/available")
+    public ResponseEntity<List<Room>> getAvailableRooms(
+            @RequestParam String date,
+            @RequestParam String startTime,
+            @RequestParam String endTime) {
         try {
-            List<TimeSlot> reservedTimeSlots = timeSlotService.getReservedTimeSlots(roomId, date);
-            return ResponseEntity.ok(reservedTimeSlots);
+            List<Room> allRooms = roomService.getAllRooms();
+            List<Long> reservedRoomIds = timeSlotService.getReservedRoomIds(date, startTime, endTime);
+
+
+            // Filter out rooms that are reserved during the specified time
+            List<Room> availableRooms = allRooms.stream()
+                    .filter(room -> !reservedRoomIds.contains(room.getRoomId()))
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(availableRooms);
         } catch (Exception e) {
-            String message = "An error occurred while retrieving reserved time slots.";
-            System.out.println(message + " Error message: " + e.getMessage());
-            return ResponseEntity.ok(message + " Error message: " + e.getMessage());
+            // Log the exception or return a custom error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+
     @PostMapping("/reservations")
     public ResponseEntity<?> createReservation(@RequestBody ReservationTimeSlotDTO request) {
         try {

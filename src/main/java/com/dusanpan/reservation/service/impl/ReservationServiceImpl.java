@@ -55,20 +55,7 @@ public class ReservationServiceImpl implements ReservationService {
             LocalTime startTime = LocalTime.parse(selectedTimeSlot.getStartTime(), timeFormatter);
             LocalTime endTime = LocalTime.parse(selectedTimeSlot.getEndTime(), timeFormatter);
 
-            List<TimeSlot> existingTimeSlots = timeSlotRepository.findByDateAndStartTimeAndEndTime(date, startTime, endTime);
-            if (existingTimeSlots != null && !existingTimeSlots.isEmpty()) {
-                for (TimeSlot existingTimeSlot : existingTimeSlots) {
-                    Set<Long> existingRoomIds = existingTimeSlot.getReservation().getRooms().stream()
-                            .map(Room::getRoomId)
-                            .collect(Collectors.toSet());
-                    Set<Long> requestedRoomIds = new HashSet<>(reservationDTO.getRoomIds());
-                    requestedRoomIds.retainAll(existingRoomIds); // Retain only the common elements
 
-                    if (!requestedRoomIds.isEmpty()) {
-                        throw new TimeSlotUnavailableException("The requested time slot is not available for the specified rooms.");
-                    }
-                }
-            }
 
             // Convert ReservationDTO to Reservation entity
             Reservation reservation = new Reservation();

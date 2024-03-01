@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface TimeSlotService {
 
-    List<TimeSlot> getReservedTimeSlots(Long roomId, String date) throws Exception;
 
-    List<TimeSlot> getTimeSlotsByReservation(Reservation reservation);
+    List<Long> getReservedRoomIds(String date, String startTime, String endTime);
 }
