@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,21 +38,14 @@ public class TimeSlotServiceImpl implements TimeSlotService {
             LocalTime localStartTime = LocalTime.parse(startTime, hourFormatter);
             LocalTime localEndTime = LocalTime.parse(endTime, hourFormatter);
 
-            // Retrieve all time slots for the specified date and overlapping time range
-            List<TimeSlot> overlappingTimeSlots = timeSlotRepository.findByDateAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-                    localDate, ReservationStatus.RESERVED, localEndTime, localStartTime);
 
-            // Filter out time slots where the requested time slot overlaps
-            List<TimeSlot> nonOverlappingTimeSlots = overlappingTimeSlots.stream()
-                    .filter(timeSlot -> !isTimeSlotOverlap(localStartTime, localEndTime, timeSlot.getStartTime(), timeSlot.getEndTime()))
-                    .collect(Collectors.toList());
+            ReservationStatus status = ReservationStatus.RESERVED;
 
-            // Extract the room IDs from the non-overlapping time slots
-            List<Long> reservedRoomIds = nonOverlappingTimeSlots.stream()
-                    .map(timeSlot -> timeSlot.getReservation().getRooms().stream()
-                            .map(Room::getRoomId)
-                            .collect(Collectors.toList()))
-                    .flatMap(List::stream)
+            List<Room> availableRooms = roomRepository.findAvailableRooms(localDate, localStartTime, localEndTime);
+
+            // Extract the room IDs from the available rooms
+            List<Long> reservedRoomIds = availableRooms.stream()
+                    .map(Room::getRoomId)
                     .collect(Collectors.toList());
 
             return reservedRoomIds;
@@ -59,14 +53,10 @@ public class TimeSlotServiceImpl implements TimeSlotService {
         } catch (DateTimeParseException e) {
             // Handle the exception if the parsing fails
             System.out.println("Error parsing date, startTime, or endTime: " + e.getMessage());
-            return null; // or throw an exception based on your error handling strategy
+            return Collections.emptyList(); // or throw an exception based on your error handling strategy
         }
     }
 
-    // Helper method to check if two time slots overlap
-    private boolean isTimeSlotOverlap(LocalTime start1, LocalTime end1, LocalTime start2, LocalTime end2) {
-        return start1.isBefore(end2) && end1.isAfter(start2);
-    }
 
 
 

@@ -74,7 +74,7 @@ public class UserController {
 
             // Filter out rooms that are reserved during the specified time
             List<Room> availableRooms = allRooms.stream()
-                    .filter(room -> !reservedRoomIds.contains(room.getRoomId()))
+                    .filter(room -> reservedRoomIds.contains(room.getRoomId()))
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(availableRooms);

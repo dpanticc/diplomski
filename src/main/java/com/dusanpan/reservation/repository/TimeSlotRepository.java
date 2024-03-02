@@ -35,19 +35,9 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
     Optional<TimeSlot> findByReservation(Reservation reservation);
 
     @Modifying
-    @Query(value = "UPDATE time_slots SET date = ?1, end_time = CAST(?2 AS time), reservation_id = ?3, start_time = CAST(?4 AS time), status = CAST(?5 AS reservation_status) WHERE time_slot_id = ?6", nativeQuery = true)
+    @Query(value = "UPDATE time_slots SET date = ?1, end_time = CAST(?2 AS time), reservation_id = ?3, start_time = CAST(?4 AS time), status = CAST(?5 AS reservation_status) " +
+            "WHERE time_slot_id = ?6", nativeQuery = true)
     void updateTimeSlot(LocalDate date, LocalTime startTime, Long reservationId, LocalTime endTime, String status, Long timeSlotId);
 
 
-
-    @Query("SELECT ts FROM TimeSlot ts " +
-            "WHERE ts.date = :localDate " +
-            "AND ts.status = :reservationStatus " +
-            "AND ts.startTime <= :localEndTime " +
-            "AND ts.endTime >= :localStartTime")
-    List<TimeSlot> findByDateAndStatusAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-            @Param("localDate") LocalDate localDate,
-            @Param("reservationStatus") ReservationStatus reservationStatus,
-            @Param("localEndTime") LocalTime localEndTime,
-            @Param("localStartTime") LocalTime localStartTime);
 }
