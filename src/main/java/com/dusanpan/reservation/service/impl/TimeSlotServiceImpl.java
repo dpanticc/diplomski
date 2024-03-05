@@ -31,17 +31,22 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     public List<Long> getReservedRoomIds(String date, String startTime, String endTime) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+            String formatedStarTime = startTime + ":00";
+            String formatedEndTime = endTime + ":00";
+
 
             // Parse the string date, startTime, and endTime to LocalDateTime using the defined formatter
             LocalDate localDate = LocalDate.parse(date, formatter);
-            LocalTime localStartTime = LocalTime.parse(startTime, hourFormatter);
-            LocalTime localEndTime = LocalTime.parse(endTime, hourFormatter);
+            LocalTime localStartTime = LocalTime.parse(formatedStarTime, hourFormatter);
+            LocalTime localEndTime = LocalTime.parse(formatedEndTime, hourFormatter);
 
+            System.out.println(localDate);
+            System.out.println("local start time: " + localStartTime);
+            System.out.println("local end time: " +localEndTime);
 
-            ReservationStatus status = ReservationStatus.RESERVED;
-
-            List<Room> availableRooms = roomRepository.findAvailableRooms(localDate, localStartTime, localEndTime);
+            List<Room> availableRooms = roomRepository.findRoomsReservedOnDate(localDate, localStartTime, localEndTime);
 
             // Extract the room IDs from the available rooms
             List<Long> reservedRoomIds = availableRooms.stream()
