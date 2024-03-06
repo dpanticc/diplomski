@@ -8,6 +8,7 @@ import com.dusanpan.reservation.domain.purpose.ThesisDefensePurpose;
 import com.dusanpan.reservation.dto.FetchReservationDTO;
 import com.dusanpan.reservation.dto.ReservationDTO;
 import com.dusanpan.reservation.dto.TimeSlotDTO;
+import com.dusanpan.reservation.email.EmailSender;
 import com.dusanpan.reservation.exception.ErrorObject;
 import com.dusanpan.reservation.exception.TimeSlotUnavailableException;
 import com.dusanpan.reservation.repository.*;
@@ -38,6 +39,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final ClassPurposeRepository classPurposeRepository;
     private final StudentOrgProjectPurposeRepository studentOrgProjectPurposeRepository;
     private final ThesisDefensePurposeRepository thesisDefensePurposeRepository;
+    private final EmailSender emailSender;
 
     @Override
     @Transactional
@@ -202,6 +204,20 @@ public class ReservationServiceImpl implements ReservationService {
                                 timeSlot.getTimeSlotId()
                         );
 
+                        Set<Room> rooms = reservation.getRooms();
+                        List<String> roomNames = rooms.stream().map(Room::getName).collect(Collectors.toList());
+
+                        String roomNamesString = String.join(", ", roomNames);
+
+
+                        emailSender.send(
+                                reservation.getUser().getEmail(),
+                                "Your reservation has been accepted for room: " + roomNamesString + "\n" +
+                                        "at time: " + timeSlot.getStartTime() + "-" + timeSlot.getEndTime() +
+                                        " and date: " + timeSlot.getDate(),
+                                "Reservation accepted"
+                        );
+
                         // Log success message
                         System.out.println("Reservation accepted successfully");
 
@@ -259,6 +275,20 @@ public class ReservationServiceImpl implements ReservationService {
                                 timeSlot.getStartTime(),
                                 "CANCELED",
                                 timeSlot.getTimeSlotId()
+                        );
+
+                        Set<Room> rooms = reservation.getRooms();
+                        List<String> roomNames = rooms.stream().map(Room::getName).collect(Collectors.toList());
+
+                        String roomNamesString = String.join(", ", roomNames);
+
+
+                        emailSender.send(
+                                reservation.getUser().getEmail(),
+                                "Your reservation has been canceled for room: " + roomNamesString + "\n" +
+                                        "at time: " + timeSlot.getStartTime() + "-" + timeSlot.getEndTime() +
+                                        " and date: " + timeSlot.getDate(),
+                                "Reservation canceled"
                         );
 
                         // Log success message

@@ -20,13 +20,13 @@ public class EmailService implements EmailSender{
 
     @Override
     @Async
-    public void send(String to, String email) {
+    public void send(String to, String email, String subject) {
         try{
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setTo(to);
             helper.setText(email, true);
-            helper.setSubject("Confirm your email");
+            helper.setSubject(subject);
             helper.setFrom("myapp.notifications7@gmail.com");
 
             mailSender.send(mimeMessage);

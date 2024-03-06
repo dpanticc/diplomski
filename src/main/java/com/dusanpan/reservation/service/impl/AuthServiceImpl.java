@@ -94,7 +94,7 @@ public class AuthServiceImpl implements AuthService {
         repository.save(user);
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
-        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link));
+        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(), link), "Confirm your email");
 
         String responseToken = '"' + token + '"';
 
