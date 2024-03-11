@@ -33,8 +33,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             "  AND r.room_id = ro.room_id " +
             "  AND ts.status = 'RESERVED'" +
             "  AND (:localStartTime >= ts.start_time AND :localStartTime < ts.end_time" +
-            "  OR :localEndTime > ts.start_time AND :localEndTime < ts.end_time" +
-            "  OR :localStartTime < ts.start_time AND :localEndTime > ts.end_time)" +
+            "  OR :localEndTime > ts.start_time AND :localEndTime <= ts.end_time" +
+            "  OR :localStartTime <= ts.start_time AND :localEndTime >= ts.end_time)" +
             ")", nativeQuery = true)
     List<Room> findRoomsReservedOnDate(@Param("localDate") LocalDate localDate,
                                        @Param("localStartTime") LocalTime localStartTime,
