@@ -30,7 +30,7 @@ public class TimeSlotServiceImpl implements TimeSlotService {
     @Override
     public List<Long> getReservedRoomIds(String date, String startTime, String endTime) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
             DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
             String formatedStarTime = startTime + ":00";

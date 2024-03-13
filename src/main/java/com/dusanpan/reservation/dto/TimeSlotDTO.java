@@ -11,14 +11,14 @@ import java.time.format.DateTimeFormatter;
 public class TimeSlotDTO {
 
     private Long timeSlotId;
-    private String date; // Assuming date is in string format
-    private String startTime; // Assuming startTime is in string format
-    private String endTime; // Assuming endTime is in string format
+    private String date;
+    private String startTime;
+    private String endTime;
     private ReservationStatus status;
 
     // Format date and parse
     public LocalDate getDateAsLocalDate() {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy.");
         return LocalDate.parse(date, dateFormatter);
     }
 
