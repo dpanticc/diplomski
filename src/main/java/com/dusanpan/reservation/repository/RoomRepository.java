@@ -39,4 +39,22 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     List<Room> findRoomsReservedOnDate(@Param("localDate") LocalDate localDate,
                                        @Param("localStartTime") LocalTime localStartTime,
                                        @Param("localEndTime") LocalTime localEndTime);
+    @Query(value = "SELECT r.* " +
+            "FROM rooms r " +
+            "WHERE EXISTS (" +
+            "  SELECT 1 " +
+            "  FROM time_slots ts " +
+            "  JOIN reservations tr ON ts.reservation_id = tr.reservation_id " +
+            "  JOIN reservation_room ro ON tr.reservation_id = ro.reservation_id " +
+            "  WHERE ts.date = :localDate " +
+            "  AND r.room_id = ro.room_id " +
+            "  AND ts.status = 'RESERVED'" +
+            "  AND (:localStartTime >= ts.start_time AND :localStartTime < ts.end_time" +
+            "  OR :localEndTime > ts.start_time AND :localEndTime <= ts.end_time" +
+            "  OR :localStartTime <= ts.start_time AND :localEndTime >= ts.end_time)" +
+            ")", nativeQuery = true)
+    List<Room> findRoomsNotReservedOnDate(@Param("localDate") LocalDate localDate,
+                                       @Param("localStartTime") LocalTime localStartTime,
+                                       @Param("localEndTime") LocalTime localEndTime);
+
 }

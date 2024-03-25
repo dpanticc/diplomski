@@ -26,6 +26,23 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
+    @ExceptionHandler(TimeSlotUnavailableException.class)
+    public ResponseEntity<ErrorObject> handleTimeSlotUnavailableException(TimeSlotUnavailableException ex, WebRequest request) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ReservationAlreadyExistsException.class)
+    public ResponseEntity<ErrorObject> handleReservationAlreadyExistsException(ReservationAlreadyExistsException ex, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.CONFLICT.value());
+        errorObject.setMessage(errorObject.getMessage());
+        errorObject.setTimestamp(new Date());
+
+        return buildErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
+    }
+
+
     private ResponseEntity<ErrorObject> buildErrorResponse(HttpStatus status, String message) {
         ErrorObject errorObject = new ErrorObject();
         errorObject.setStatusCode(status.value());
@@ -34,10 +51,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorObject, status);
     }
 
-    @ExceptionHandler(TimeSlotUnavailableException.class)
-    public ResponseEntity<ErrorObject> handleTimeSlotUnavailableException(TimeSlotUnavailableException ex, WebRequest request) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
 
 
 }

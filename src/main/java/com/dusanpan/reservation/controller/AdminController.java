@@ -2,6 +2,7 @@ package com.dusanpan.reservation.controller;
 import com.dusanpan.reservation.domain.Room;
 import com.dusanpan.reservation.dto.FetchReservationDTO;
 import com.dusanpan.reservation.domain.User;
+import com.dusanpan.reservation.exception.ReservationAlreadyExistsException;
 import com.dusanpan.reservation.service.AdminService;
 import com.dusanpan.reservation.service.ReservationService;
 import com.dusanpan.reservation.service.RoomService;
@@ -72,15 +73,25 @@ public class AdminController {
 
     @PutMapping("/reservations/accept/{reservationId}")
     public ResponseEntity<Void> acceptReservation(@PathVariable Long reservationId) {
-        // Assuming you have a service method to handle the acceptance logic
-        boolean isAccepted = reservationService.acceptReservation(reservationId);
+        try {
+            // Assuming you have a service method to handle the acceptance logic
+            boolean isAccepted = reservationService.acceptReservation(reservationId);
 
-        if (isAccepted) {
-            return ResponseEntity.ok().build(); // Return 200 OK if accepted
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // Return an error status if not accepted
+            if (isAccepted) {
+                return ResponseEntity.ok().build(); // Return 200 OK if accepted
+            } else {
+                // Return 409 Conflict if the reservation already exists
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            }
+        } catch (ReservationAlreadyExistsException ex) {
+            // Handle ReservationAlreadyExistsException and return 409 Conflict
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        } catch (Exception ex) {
+            // Log or handle other exceptions as needed
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
     @PutMapping("/reservations/decline/{reservationId}")
     public ResponseEntity<Void> declineReservation(@PathVariable Long reservationId) {

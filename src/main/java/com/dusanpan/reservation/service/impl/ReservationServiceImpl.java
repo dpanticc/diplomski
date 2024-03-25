@@ -10,6 +10,7 @@ import com.dusanpan.reservation.dto.ReservationDTO;
 import com.dusanpan.reservation.dto.TimeSlotDTO;
 import com.dusanpan.reservation.email.EmailSender;
 import com.dusanpan.reservation.exception.ErrorObject;
+import com.dusanpan.reservation.exception.ReservationAlreadyExistsException;
 import com.dusanpan.reservation.exception.TimeSlotUnavailableException;
 import com.dusanpan.reservation.repository.*;
 import com.dusanpan.reservation.service.ReservationService;
@@ -187,13 +188,13 @@ public class ReservationServiceImpl implements ReservationService {
 
                     // Check if the status transition is valid
                     if (timeSlot.getStatus() == ReservationStatus.PENDING ) {
-                        // Perform any logic related to accepting the reservation
-
 
                         // Log the information before saving
                         System.out.println("Accepting reservation with ID: " + reservationId);
-
-                        System.out.println(timeSlot.toString());
+                        // Check if the room is already reserved for the time slot
+                        if (!isRoomAvailable(timeSlot, reservation.getRooms())) {
+                            throw new ReservationAlreadyExistsException("The requested reservation's room and time slot are already reserved.");
+                        }
                         // Save the updated time slot with the string representation of ReservationStatus
                         timeSlotRepository.updateTimeSlot(
                                 timeSlot.getDate(),
@@ -243,6 +244,24 @@ public class ReservationServiceImpl implements ReservationService {
             e.printStackTrace();
             return false; // Return false in case of an exception
         }
+    }
+
+    private boolean isRoomAvailable(TimeSlot timeSlot, Set<Room> requestedRooms) {
+        LocalDate localDate = timeSlot.getDate();
+        LocalTime localStartTime = timeSlot.getStartTime();
+        LocalTime localEndTime = timeSlot.getEndTime();
+
+        // Fetch the reserved rooms for the given time slot
+        List<Room> reservedRooms = roomRepository.findRoomsNotReservedOnDate(localDate, localStartTime, localEndTime);
+
+        // Check if any of the requested rooms are among the reserved rooms
+        for (Room reservedRoom : reservedRooms) {
+            if (requestedRooms.contains(reservedRoom)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override
