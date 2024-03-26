@@ -7,6 +7,7 @@ import com.dusanpan.reservation.domain.purpose.StudentOrgProjectPurpose;
 import com.dusanpan.reservation.domain.purpose.ThesisDefensePurpose;
 import com.dusanpan.reservation.dto.FetchReservationDTO;
 import com.dusanpan.reservation.dto.ReservationDTO;
+import com.dusanpan.reservation.dto.ReservationTimeSlotDTO;
 import com.dusanpan.reservation.dto.TimeSlotDTO;
 import com.dusanpan.reservation.email.EmailSender;
 import com.dusanpan.reservation.exception.ErrorObject;
@@ -334,6 +335,47 @@ public class ReservationServiceImpl implements ReservationService {
             System.err.println("Error accepting reservation with ID: " + reservationId);
             e.printStackTrace();
             return false; // Return false in case of an exception
+        }
+    }
+
+    @Override
+    public List<ReservationTimeSlotDTO> getUserReservations(String username) {
+        try {
+            // Retrieve user based on the provided username
+            User user = userRepository.getUserByUsername(username);
+
+            // Fetch reservations associated with the user
+            List<Reservation> userReservations = reservationRepository.findByUser(user);
+
+            // Create a list to store ReservationTimeSlotDTO objects
+            List<ReservationTimeSlotDTO> reservationTimeSlotDTOs = new ArrayList<>();
+
+            // Iterate through each reservation and create corresponding DTOs
+            for (Reservation reservation : userReservations) {
+                // Retrieve the time slots associated with the reservation
+                List<TimeSlot> timeSlots = timeSlotRepository.findAllByReservation(reservation);
+
+                // Create ReservationDTO
+                ReservationDTO reservationDTO = ReservationDTO.fromEntity(reservation);
+
+                // Create and add ReservationTimeSlotDTOs for each time slot
+                for (TimeSlot timeSlot : timeSlots) {
+                    // Create TimeSlotDTO
+                    TimeSlotDTO timeSlotDTO = TimeSlotDTO.fromEntity(timeSlot);
+
+                    // Create ReservationTimeSlotDTO and add it to the list
+                    ReservationTimeSlotDTO reservationTimeSlotDTO = new ReservationTimeSlotDTO();
+                    reservationTimeSlotDTO.setReservationDTO(reservationDTO);
+                    reservationTimeSlotDTO.setTimeSlotDTO(timeSlotDTO);
+                    reservationTimeSlotDTOs.add(reservationTimeSlotDTO);
+                }
+            }
+
+            return reservationTimeSlotDTOs;
+        } catch (Exception e) {
+            // Log or handle exceptions as needed
+            e.printStackTrace();
+            throw new RuntimeException("Failed to fetch user reservations for username: " + username);
         }
     }
 

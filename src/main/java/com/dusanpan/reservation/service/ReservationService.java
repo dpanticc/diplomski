@@ -2,6 +2,7 @@ package com.dusanpan.reservation.service;
 
 import com.dusanpan.reservation.dto.FetchReservationDTO;
 import com.dusanpan.reservation.dto.ReservationDTO;
+import com.dusanpan.reservation.dto.ReservationTimeSlotDTO;
 import com.dusanpan.reservation.dto.TimeSlotDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -17,4 +18,6 @@ public interface ReservationService {
     boolean acceptReservation(Long reservationId);
 
     boolean declineReservation(Long reservationId);
+
+    List<ReservationTimeSlotDTO> getUserReservations(String username);
 }

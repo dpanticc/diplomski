@@ -83,6 +83,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    @GetMapping("/reservations/{username}")
+    public ResponseEntity<List<ReservationTimeSlotDTO>> getUsersReservations(@PathVariable String username){
+        try {
+            List<ReservationTimeSlotDTO> userReservations = reservationService.getUserReservations(username);
+            return ResponseEntity.ok(userReservations);
+        } catch (Exception e) {
+            // Log the exception or return a custom error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 
     @PostMapping("/reservations")
@@ -123,6 +133,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
 
 
 }

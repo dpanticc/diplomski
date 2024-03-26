@@ -17,11 +17,6 @@ import java.util.Optional;
 @Repository
 public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
 
-    List<TimeSlot> findByReservationAndDate(Reservation reservation, LocalDate localDate);
-
-    List<TimeSlot> getTimeSlotsByReservation(Reservation reservation);
-
-    List<TimeSlot> findByDateAndStartTimeAndEndTime(LocalDate date, LocalTime startTime, LocalTime endTime);
 
     @Modifying
     @Query(value = "INSERT INTO time_slots (date, start_time, end_time, reservation_id, status) " +
@@ -40,4 +35,5 @@ public interface TimeSlotRepository extends JpaRepository<TimeSlot, Long> {
     void updateTimeSlot(LocalDate date, LocalTime startTime, Long reservationId, LocalTime endTime, String status, Long timeSlotId);
 
 
+    List<TimeSlot> findAllByReservation(Reservation reservation);
 }
